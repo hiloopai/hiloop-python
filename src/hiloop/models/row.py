@@ -17,8 +17,8 @@ T = TypeVar("T", bound="Row")
 
 @_attrs_define
 class Row:
-    """One result row: column name -> typed value. For aggregations the columns are the breakdown
-    columns plus one per calculation (e.g. "p95_cost_usd").
+    """One result row: column name -> typed value. For aggregate surfaces (rollup) the columns are the
+    grouping columns plus one per aggregate metric (e.g. "p95_cost_usd"). Reused by the view service.
 
        Attributes:
            columns (RowColumns | Unset):
