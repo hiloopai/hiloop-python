@@ -19,11 +19,11 @@ T = TypeVar("T", bound="BranchDiffRequest")
 class BranchDiffRequest:
     """
     Attributes:
-        spec (BranchDiffSpec | Unset): A branch-diff (Q3): the events under subtree `path_a` that are absent under
-            subtree `path_b`,
-             within one run. This is the differentiated tree-native query — two anchored `fork_path` prefix
-             scans, set-differenced on a semantic key (signal, name, attributes). The tenant is taken from
-             request identity, never from this body.
+        spec (BranchDiffSpec | Unset): A branch-diff (Q3): the events unique to run A that are absent from run B, across
+            two runs sharing
+             a tree. This is the differentiated tree-native query — each run's lineage subtree is resolved
+             server-side and the two are set-differenced on a semantic key (signal, name, attributes). The
+             tenant is taken from request identity, never from this body.
     """
 
     spec: BranchDiffSpec | Unset = UNSET

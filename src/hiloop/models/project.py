@@ -25,6 +25,10 @@ class Project:
         version (str | Unset): Optimistic-concurrency version, bumped on every update. Echo it back as the `If-Match`
             request header to make a later update conditional — if the project changed meanwhile the server rejects the
             update with error code `precondition_failed` instead of overwriting.
+        run_count (str | Unset): The total number of runs in the project, computed server-side across all of the
+            project's runs (not just one page).
+        last_run_at (str | Unset): When the most recent run in the project was created (RFC 3339), or empty when the
+            project has no runs yet.
     """
 
     id: str | Unset = UNSET
@@ -33,6 +37,8 @@ class Project:
     name: str | Unset = UNSET
     created_at: str | Unset = UNSET
     version: str | Unset = UNSET
+    run_count: str | Unset = UNSET
+    last_run_at: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -47,6 +53,10 @@ class Project:
         created_at = self.created_at
 
         version = self.version
+
+        run_count = self.run_count
+
+        last_run_at = self.last_run_at
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -63,6 +73,10 @@ class Project:
             field_dict["createdAt"] = created_at
         if version is not UNSET:
             field_dict["version"] = version
+        if run_count is not UNSET:
+            field_dict["runCount"] = run_count
+        if last_run_at is not UNSET:
+            field_dict["lastRunAt"] = last_run_at
 
         return field_dict
 
@@ -81,6 +95,10 @@ class Project:
 
         version = d.pop("version", UNSET)
 
+        run_count = d.pop("runCount", UNSET)
+
+        last_run_at = d.pop("lastRunAt", UNSET)
+
         project = cls(
             id=id,
             tenant_id=tenant_id,
@@ -88,6 +106,8 @@ class Project:
             name=name,
             created_at=created_at,
             version=version,
+            run_count=run_count,
+            last_run_at=last_run_at,
         )
 
         project.additional_properties = d

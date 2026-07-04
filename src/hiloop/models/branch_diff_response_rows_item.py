@@ -6,11 +6,11 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DeleteSavedViewResponse")
+T = TypeVar("T", bound="BranchDiffResponseRowsItem")
 
 
 @_attrs_define
-class DeleteSavedViewResponse:
+class BranchDiffResponseRowsItem:
     """ """
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -25,10 +25,10 @@ class DeleteSavedViewResponse:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        delete_saved_view_response = cls()
+        branch_diff_response_rows_item = cls()
 
-        delete_saved_view_response.additional_properties = d
-        return delete_saved_view_response
+        branch_diff_response_rows_item.additional_properties = d
+        return branch_diff_response_rows_item
 
     @property
     def additional_keys(self) -> list[str]:

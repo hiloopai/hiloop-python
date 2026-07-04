@@ -6,53 +6,61 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.capture_spec_policy import CaptureSpecPolicy
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="CaptureSpec")
+T = TypeVar("T", bound="StartRunRequest")
 
 
 @_attrs_define
-class CaptureSpec:
+class StartRunRequest:
     """
     Attributes:
-        policy (CaptureSpecPolicy | Unset): REST-safe capture policy. Use CAPTURE_POLICY_DISABLED to run the sandbox
-            with no capture
-             instrumentation; omitted or CAPTURE_POLICY_UNSPECIFIED defaults to enabled.
+        project_id (str | Unset): The project the new run belongs to.
+        parent_run_id (str | Unset): Optional parent run to continue the tree from. Empty starts a new tree root.
+        label (str | Unset): An optional human-readable label.
     """
 
-    policy: CaptureSpecPolicy | Unset = UNSET
+    project_id: str | Unset = UNSET
+    parent_run_id: str | Unset = UNSET
+    label: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        policy: str | Unset = UNSET
-        if not isinstance(self.policy, Unset):
-            policy = self.policy.value
+        project_id = self.project_id
+
+        parent_run_id = self.parent_run_id
+
+        label = self.label
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if policy is not UNSET:
-            field_dict["policy"] = policy
+        if project_id is not UNSET:
+            field_dict["projectId"] = project_id
+        if parent_run_id is not UNSET:
+            field_dict["parentRunId"] = parent_run_id
+        if label is not UNSET:
+            field_dict["label"] = label
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        _policy = d.pop("policy", UNSET)
-        policy: CaptureSpecPolicy | Unset
-        if isinstance(_policy, Unset):
-            policy = UNSET
-        else:
-            policy = CaptureSpecPolicy(_policy)
+        project_id = d.pop("projectId", UNSET)
 
-        capture_spec = cls(
-            policy=policy,
+        parent_run_id = d.pop("parentRunId", UNSET)
+
+        label = d.pop("label", UNSET)
+
+        start_run_request = cls(
+            project_id=project_id,
+            parent_run_id=parent_run_id,
+            label=label,
         )
 
-        capture_spec.additional_properties = d
-        return capture_spec
+        start_run_request.additional_properties = d
+        return start_run_request
 
     @property
     def additional_keys(self) -> list[str]:

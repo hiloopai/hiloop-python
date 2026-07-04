@@ -55,7 +55,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: BranchDiffRequest,
 ) -> Response[BranchDiffResponse]:
-    """Diff two fork branches: the events unique to `path_a` versus `path_b` within one run.
+    """Diff two runs in a tree: the events unique to run A versus run B.
 
     Args:
         body (BranchDiffRequest):
@@ -84,7 +84,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: BranchDiffRequest,
 ) -> BranchDiffResponse | None:
-    """Diff two fork branches: the events unique to `path_a` versus `path_b` within one run.
+    """Diff two runs in a tree: the events unique to run A versus run B.
 
     Args:
         body (BranchDiffRequest):
@@ -108,7 +108,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: BranchDiffRequest,
 ) -> Response[BranchDiffResponse]:
-    """Diff two fork branches: the events unique to `path_a` versus `path_b` within one run.
+    """Diff two runs in a tree: the events unique to run A versus run B.
 
     Args:
         body (BranchDiffRequest):
@@ -135,7 +135,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: BranchDiffRequest,
 ) -> BranchDiffResponse | None:
-    """Diff two fork branches: the events unique to `path_a` versus `path_b` within one run.
+    """Diff two runs in a tree: the events unique to run A versus run B.
 
     Args:
         body (BranchDiffRequest):

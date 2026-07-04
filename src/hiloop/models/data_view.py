@@ -22,16 +22,15 @@ class DataView:
     Attributes:
         name (str | Unset): The view name, unique within a tenant among non-deleted views.
         description (str | Unset): A human description, surfaced in the console switcher.
-        spec (DataViewSpec | Unset): The structured spec as opaque JSON — the engine's tagged `DataViewSpec` shape (a
-            Query or Rollup
-             view: scope + calculations + breakdowns + filters + orders + limit + opaque render config). Carried
-             as a Struct so the spec schema lives in ONE place (the engine's serde types); the service never
-             re-models it. Re-validated against the current column allowlist on store and on every run, so a
-             view referencing a dropped column fails closed with INVALID_ARGUMENT rather than serving a stale
-             result.
+        spec (DataViewSpec | Unset): The data-view spec as opaque JSON — the engine's tagged `DataViewSpec`: a raw `Sql`
+            `SELECT`,
+             plus opaque render config. Carried as a Struct so the spec schema lives
+             in ONE place (the engine's serde types); the service never re-models it. Re-validated against the
+             current column allowlist on store and on every run, so a view referencing a dropped column fails
+             closed with INVALID_ARGUMENT rather than serving a stale result.
         spec_version (str | Unset): Monotonic per-edit version; the store bumps it on each upsert.
-        is_builtin (bool | Unset): A seeded starter view (read-only; clone-on-edit per tenant). Customer-authored views
-            are false.
+        is_builtin (bool | Unset): Always false: every stored view is customer-authored. Retained for wire
+            compatibility.
     """
 
     name: str | Unset = UNSET

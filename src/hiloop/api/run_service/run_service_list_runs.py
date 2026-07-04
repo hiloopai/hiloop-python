@@ -17,6 +17,8 @@ def _get_kwargs(
     created_by: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
     created_before: str | Unset = UNSET,
+    root_run_id: str | Unset = UNSET,
+    project_id: str | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
@@ -32,6 +34,10 @@ def _get_kwargs(
     params["createdAfter"] = created_after
 
     params["createdBefore"] = created_before
+
+    params["rootRunId"] = root_run_id
+
+    params["projectId"] = project_id
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -74,9 +80,11 @@ def sync_detailed(
     created_by: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
     created_before: str | Unset = UNSET,
+    root_run_id: str | Unset = UNSET,
+    project_id: str | Unset = UNSET,
 ) -> Response[ListRunsResponse]:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
-     status / creator / time filters.
+     status / creator / time / tree filters.
 
     Args:
         page_size (int | Unset):
@@ -85,6 +93,8 @@ def sync_detailed(
         created_by (str | Unset):
         created_after (str | Unset):
         created_before (str | Unset):
+        root_run_id (str | Unset):
+        project_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -101,6 +111,8 @@ def sync_detailed(
         created_by=created_by,
         created_after=created_after,
         created_before=created_before,
+        root_run_id=root_run_id,
+        project_id=project_id,
     )
 
     response = client.get_httpx_client().request(
@@ -119,9 +131,11 @@ def sync(
     created_by: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
     created_before: str | Unset = UNSET,
+    root_run_id: str | Unset = UNSET,
+    project_id: str | Unset = UNSET,
 ) -> ListRunsResponse | None:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
-     status / creator / time filters.
+     status / creator / time / tree filters.
 
     Args:
         page_size (int | Unset):
@@ -130,6 +144,8 @@ def sync(
         created_by (str | Unset):
         created_after (str | Unset):
         created_before (str | Unset):
+        root_run_id (str | Unset):
+        project_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -147,6 +163,8 @@ def sync(
         created_by=created_by,
         created_after=created_after,
         created_before=created_before,
+        root_run_id=root_run_id,
+        project_id=project_id,
     ).parsed
 
 
@@ -159,9 +177,11 @@ async def asyncio_detailed(
     created_by: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
     created_before: str | Unset = UNSET,
+    root_run_id: str | Unset = UNSET,
+    project_id: str | Unset = UNSET,
 ) -> Response[ListRunsResponse]:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
-     status / creator / time filters.
+     status / creator / time / tree filters.
 
     Args:
         page_size (int | Unset):
@@ -170,6 +190,8 @@ async def asyncio_detailed(
         created_by (str | Unset):
         created_after (str | Unset):
         created_before (str | Unset):
+        root_run_id (str | Unset):
+        project_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -186,6 +208,8 @@ async def asyncio_detailed(
         created_by=created_by,
         created_after=created_after,
         created_before=created_before,
+        root_run_id=root_run_id,
+        project_id=project_id,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -202,9 +226,11 @@ async def asyncio(
     created_by: str | Unset = UNSET,
     created_after: str | Unset = UNSET,
     created_before: str | Unset = UNSET,
+    root_run_id: str | Unset = UNSET,
+    project_id: str | Unset = UNSET,
 ) -> ListRunsResponse | None:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
-     status / creator / time filters.
+     status / creator / time / tree filters.
 
     Args:
         page_size (int | Unset):
@@ -213,6 +239,8 @@ async def asyncio(
         created_by (str | Unset):
         created_after (str | Unset):
         created_before (str | Unset):
+        root_run_id (str | Unset):
+        project_id (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -231,5 +259,7 @@ async def asyncio(
             created_by=created_by,
             created_after=created_after,
             created_before=created_before,
+            root_run_id=root_run_id,
+            project_id=project_id,
         )
     ).parsed

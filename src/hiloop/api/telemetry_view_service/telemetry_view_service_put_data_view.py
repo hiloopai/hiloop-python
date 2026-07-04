@@ -60,7 +60,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
 ) -> Response[DataView]:
-    """Create or replace a structured data view (compile-validated before store).
+    """Create or replace a data view (compile-validated before store).
 
     Args:
         name (str):
@@ -94,7 +94,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
 ) -> DataView | None:
-    """Create or replace a structured data view (compile-validated before store).
+    """Create or replace a data view (compile-validated before store).
 
     Args:
         name (str):
@@ -123,7 +123,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
 ) -> Response[DataView]:
-    """Create or replace a structured data view (compile-validated before store).
+    """Create or replace a data view (compile-validated before store).
 
     Args:
         name (str):
@@ -155,7 +155,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
 ) -> DataView | None:
-    """Create or replace a structured data view (compile-validated before store).
+    """Create or replace a data view (compile-validated before store).
 
     Args:
         name (str):

@@ -1,58 +1,61 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="ExecExit")
+if TYPE_CHECKING:
+    from ..models.operation import Operation
+
+
+T = TypeVar("T", bound="StopSandboxResponse")
 
 
 @_attrs_define
-class ExecExit:
-    """Final disposition of an interactive execution.
-
+class StopSandboxResponse:
+    """
     Attributes:
-        exit_code (str | Unset): Process exit code. Meaningful only when the process exited normally.
-        signal (int | Unset): Terminating signal number, or 0 when the process exited normally.
+        operation (Operation | Unset):
     """
 
-    exit_code: str | Unset = UNSET
-    signal: int | Unset = UNSET
+    operation: Operation | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        exit_code = self.exit_code
-
-        signal = self.signal
+        operation: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.operation, Unset):
+            operation = self.operation.to_dict()
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if exit_code is not UNSET:
-            field_dict["exitCode"] = exit_code
-        if signal is not UNSET:
-            field_dict["signal"] = signal
+        if operation is not UNSET:
+            field_dict["operation"] = operation
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.operation import Operation
+
         d = dict(src_dict)
-        exit_code = d.pop("exitCode", UNSET)
+        _operation = d.pop("operation", UNSET)
+        operation: Operation | Unset
+        if isinstance(_operation, Unset):
+            operation = UNSET
+        else:
+            operation = Operation.from_dict(_operation)
 
-        signal = d.pop("signal", UNSET)
-
-        exec_exit = cls(
-            exit_code=exit_code,
-            signal=signal,
+        stop_sandbox_response = cls(
+            operation=operation,
         )
 
-        exec_exit.additional_properties = d
-        return exec_exit
+        stop_sandbox_response.additional_properties = d
+        return stop_sandbox_response
 
     @property
     def additional_keys(self) -> list[str]:

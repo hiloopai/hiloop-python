@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from ..models.capture_spec import CaptureSpec
     from ..models.create_sandbox_request_labels import CreateSandboxRequestLabels
     from ..models.egress_policy import EgressPolicy
+    from ..models.lifecycle_spec import LifecycleSpec
     from ..models.resource_spec import ResourceSpec
     from ..models.sandbox_image import SandboxImage
     from ..models.secret_binding import SecretBinding
@@ -38,6 +39,11 @@ class CreateSandboxRequest:
              runtime supports.
         secrets (list[SecretBinding] | Unset): Secret bindings injected into matching outbound requests. Empty injects
             nothing.
+        lifecycle (LifecycleSpec | Unset): Runtime lease policy. Omitted, or lease_secs=0, uses the server default. This
+            intentionally exposes
+             only the expiry control needed by public callers; process defaults, mounts, environment, and user
+             remain server-managed in the first runtime slice.
+        description (str | Unset): User-assigned free-text description. Empty leaves the sandbox undescribed.
     """
 
     project_id: str | Unset = UNSET
@@ -49,6 +55,8 @@ class CreateSandboxRequest:
     capture: CaptureSpec | Unset = UNSET
     egress: EgressPolicy | Unset = UNSET
     secrets: list[SecretBinding] | Unset = UNSET
+    lifecycle: LifecycleSpec | Unset = UNSET
+    description: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -90,6 +98,12 @@ class CreateSandboxRequest:
                 secrets_item = secrets_item_data.to_dict()
                 secrets.append(secrets_item)
 
+        lifecycle: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.lifecycle, Unset):
+            lifecycle = self.lifecycle.to_dict()
+
+        description = self.description
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -111,6 +125,10 @@ class CreateSandboxRequest:
             field_dict["egress"] = egress
         if secrets is not UNSET:
             field_dict["secrets"] = secrets
+        if lifecycle is not UNSET:
+            field_dict["lifecycle"] = lifecycle
+        if description is not UNSET:
+            field_dict["description"] = description
 
         return field_dict
 
@@ -120,6 +138,7 @@ class CreateSandboxRequest:
         from ..models.capture_spec import CaptureSpec
         from ..models.create_sandbox_request_labels import CreateSandboxRequestLabels
         from ..models.egress_policy import EgressPolicy
+        from ..models.lifecycle_spec import LifecycleSpec
         from ..models.resource_spec import ResourceSpec
         from ..models.sandbox_image import SandboxImage
         from ..models.secret_binding import SecretBinding
@@ -182,6 +201,15 @@ class CreateSandboxRequest:
 
                 secrets.append(secrets_item)
 
+        _lifecycle = d.pop("lifecycle", UNSET)
+        lifecycle: LifecycleSpec | Unset
+        if isinstance(_lifecycle, Unset):
+            lifecycle = UNSET
+        else:
+            lifecycle = LifecycleSpec.from_dict(_lifecycle)
+
+        description = d.pop("description", UNSET)
+
         create_sandbox_request = cls(
             project_id=project_id,
             name=name,
@@ -192,6 +220,8 @@ class CreateSandboxRequest:
             capture=capture,
             egress=egress,
             secrets=secrets,
+            lifecycle=lifecycle,
+            description=description,
         )
 
         create_sandbox_request.additional_properties = d

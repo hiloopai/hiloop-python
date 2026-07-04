@@ -6,53 +6,29 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.capture_spec_policy import CaptureSpecPolicy
-from ..types import UNSET, Unset
-
-T = TypeVar("T", bound="CaptureSpec")
+T = TypeVar("T", bound="DeleteProjectResponse")
 
 
 @_attrs_define
-class CaptureSpec:
-    """
-    Attributes:
-        policy (CaptureSpecPolicy | Unset): REST-safe capture policy. Use CAPTURE_POLICY_DISABLED to run the sandbox
-            with no capture
-             instrumentation; omitted or CAPTURE_POLICY_UNSPECIFIED defaults to enabled.
-    """
+class DeleteProjectResponse:
+    """ """
 
-    policy: CaptureSpecPolicy | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        policy: str | Unset = UNSET
-        if not isinstance(self.policy, Unset):
-            policy = self.policy.value
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({})
-        if policy is not UNSET:
-            field_dict["policy"] = policy
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        _policy = d.pop("policy", UNSET)
-        policy: CaptureSpecPolicy | Unset
-        if isinstance(_policy, Unset):
-            policy = UNSET
-        else:
-            policy = CaptureSpecPolicy(_policy)
+        delete_project_response = cls()
 
-        capture_spec = cls(
-            policy=policy,
-        )
-
-        capture_spec.additional_properties = d
-        return capture_spec
+        delete_project_response.additional_properties = d
+        return delete_project_response
 
     @property
     def additional_keys(self) -> list[str]:

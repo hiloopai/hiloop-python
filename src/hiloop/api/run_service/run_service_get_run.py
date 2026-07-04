@@ -50,7 +50,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[GetRunResponse]:
-    """Get a run by id within the caller's tenant, including its live-fork-count roll-up.
+    """Get a run by id within the caller's tenant.
 
     Args:
         id (str):
@@ -79,7 +79,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 ) -> GetRunResponse | None:
-    """Get a run by id within the caller's tenant, including its live-fork-count roll-up.
+    """Get a run by id within the caller's tenant.
 
     Args:
         id (str):
@@ -103,7 +103,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[GetRunResponse]:
-    """Get a run by id within the caller's tenant, including its live-fork-count roll-up.
+    """Get a run by id within the caller's tenant.
 
     Args:
         id (str):
@@ -130,7 +130,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 ) -> GetRunResponse | None:
-    """Get a run by id within the caller's tenant, including its live-fork-count roll-up.
+    """Get a run by id within the caller's tenant.
 
     Args:
         id (str):

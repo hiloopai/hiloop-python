@@ -23,7 +23,7 @@ class PutDataViewRequest:
        Attributes:
            name (str | Unset): The view name (per-tenant unique); supplied by the path.
            description (str | Unset): An optional human description.
-           spec (PutDataViewRequestSpec | Unset): The structured spec (opaque JSON, the engine's tagged `DataViewSpec`).
+           spec (PutDataViewRequestSpec | Unset): The data-view spec (opaque JSON, the engine's tagged `DataViewSpec`).
                Compile-validated before
                 store.
     """

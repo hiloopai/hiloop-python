@@ -8,51 +8,46 @@ from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-T = TypeVar("T", bound="SavedView")
+T = TypeVar("T", bound="LifecycleSpec")
 
 
 @_attrs_define
-class SavedView:
-    """A saved SQL view: a named, per-tenant `SELECT` re-validated on every run.
+class LifecycleSpec:
+    """Runtime lease policy. Omitted, or lease_secs=0, uses the server default. This intentionally exposes
+    only the expiry control needed by public callers; process defaults, mounts, environment, and user
+    remain server-managed in the first runtime slice.
 
-    Attributes:
-        name (str | Unset): The view name, unique within a tenant.
-        sql (str | Unset): The stored `SELECT` SQL. Validated before store and re-validated on every execution.
+       Attributes:
+           lease_secs (str | Unset): Max runtime duration in seconds. Nonzero values must be between 60 and 86400
+               inclusive;
+                zero/omitted uses the server default.
     """
 
-    name: str | Unset = UNSET
-    sql: str | Unset = UNSET
+    lease_secs: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        name = self.name
-
-        sql = self.sql
+        lease_secs = self.lease_secs
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if name is not UNSET:
-            field_dict["name"] = name
-        if sql is not UNSET:
-            field_dict["sql"] = sql
+        if lease_secs is not UNSET:
+            field_dict["leaseSecs"] = lease_secs
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        name = d.pop("name", UNSET)
+        lease_secs = d.pop("leaseSecs", UNSET)
 
-        sql = d.pop("sql", UNSET)
-
-        saved_view = cls(
-            name=name,
-            sql=sql,
+        lifecycle_spec = cls(
+            lease_secs=lease_secs,
         )
 
-        saved_view.additional_properties = d
-        return saved_view
+        lifecycle_spec.additional_properties = d
+        return lifecycle_spec
 
     @property
     def additional_keys(self) -> list[str]:

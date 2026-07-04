@@ -9,7 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.row import Row
+    from ..models.query_response_rows_item import QueryResponseRowsItem
 
 
 T = TypeVar("T", bound="QueryResponse")
@@ -19,10 +19,13 @@ T = TypeVar("T", bound="QueryResponse")
 class QueryResponse:
     """
     Attributes:
-        rows (list[Row] | Unset):
+        rows (list[QueryResponseRowsItem] | Unset): One flat JSON object per result row: column name -> bare scalar
+            value, nulls omitted, 64-bit
+             integers as decimal strings. For aggregate surfaces the columns are the grouping columns plus
+             one per aggregate metric (e.g. "sum_input_tokens"). Reused by the view service.
     """
 
-    rows: list[Row] | Unset = UNSET
+    rows: list[QueryResponseRowsItem] | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -43,15 +46,15 @@ class QueryResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.row import Row
+        from ..models.query_response_rows_item import QueryResponseRowsItem
 
         d = dict(src_dict)
         _rows = d.pop("rows", UNSET)
-        rows: list[Row] | Unset = UNSET
+        rows: list[QueryResponseRowsItem] | Unset = UNSET
         if _rows is not UNSET:
             rows = []
             for rows_item_data in _rows:
-                rows_item = Row.from_dict(rows_item_data)
+                rows_item = QueryResponseRowsItem.from_dict(rows_item_data)
 
                 rows.append(rows_item)
 

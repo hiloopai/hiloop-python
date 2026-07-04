@@ -24,9 +24,7 @@ class AnnotateRangeRequest:
         payload_json (str | Unset): The annotation payload as a JSON object string; validated against `schema_name`'s
             registered
              JSON Schema at ingest. Reserved `hiloop.annotation.*` keys are platform-owned and excluded.
-        fork_path (str | Unset): The fork-node path the annotation is anchored at. Empty means the run root.
-        annotator_kind (str | Unset): Who produced the annotation (e.g. "human", "llm"); stamped as the reserved
-            annotator-kind key.
+        lineage_path (str | Unset): The run lineage path the annotation is anchored at. Empty means the tree root.
     """
 
     run_id: str | Unset = UNSET
@@ -34,8 +32,7 @@ class AnnotateRangeRequest:
     range_start_ns: str | Unset = UNSET
     range_end_ns: str | Unset = UNSET
     payload_json: str | Unset = UNSET
-    fork_path: str | Unset = UNSET
-    annotator_kind: str | Unset = UNSET
+    lineage_path: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -49,9 +46,7 @@ class AnnotateRangeRequest:
 
         payload_json = self.payload_json
 
-        fork_path = self.fork_path
-
-        annotator_kind = self.annotator_kind
+        lineage_path = self.lineage_path
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -66,10 +61,8 @@ class AnnotateRangeRequest:
             field_dict["rangeEndNs"] = range_end_ns
         if payload_json is not UNSET:
             field_dict["payloadJson"] = payload_json
-        if fork_path is not UNSET:
-            field_dict["forkPath"] = fork_path
-        if annotator_kind is not UNSET:
-            field_dict["annotatorKind"] = annotator_kind
+        if lineage_path is not UNSET:
+            field_dict["lineagePath"] = lineage_path
 
         return field_dict
 
@@ -86,9 +79,7 @@ class AnnotateRangeRequest:
 
         payload_json = d.pop("payloadJson", UNSET)
 
-        fork_path = d.pop("forkPath", UNSET)
-
-        annotator_kind = d.pop("annotatorKind", UNSET)
+        lineage_path = d.pop("lineagePath", UNSET)
 
         annotate_range_request = cls(
             run_id=run_id,
@@ -96,8 +87,7 @@ class AnnotateRangeRequest:
             range_start_ns=range_start_ns,
             range_end_ns=range_end_ns,
             payload_json=payload_json,
-            fork_path=fork_path,
-            annotator_kind=annotator_kind,
+            lineage_path=lineage_path,
         )
 
         annotate_range_request.additional_properties = d

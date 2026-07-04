@@ -18,25 +18,23 @@ class Fork:
         id (str | Unset):
         tenant_id (str | Unset):
         source_sandbox_id (str | Unset):
-        source_snapshot_id (str | Unset):
         child_sandbox_id (str | Unset):
-        fork_node_id (str | Unset):
         implementation (str | Unset):
         effective_semantics_json (str | Unset):
         intermediate_snapshot_id (str | Unset):
         operation_id (str | Unset):
+        child_run_id (str | Unset): The child run this fork created.
     """
 
     id: str | Unset = UNSET
     tenant_id: str | Unset = UNSET
     source_sandbox_id: str | Unset = UNSET
-    source_snapshot_id: str | Unset = UNSET
     child_sandbox_id: str | Unset = UNSET
-    fork_node_id: str | Unset = UNSET
     implementation: str | Unset = UNSET
     effective_semantics_json: str | Unset = UNSET
     intermediate_snapshot_id: str | Unset = UNSET
     operation_id: str | Unset = UNSET
+    child_run_id: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -46,11 +44,7 @@ class Fork:
 
         source_sandbox_id = self.source_sandbox_id
 
-        source_snapshot_id = self.source_snapshot_id
-
         child_sandbox_id = self.child_sandbox_id
-
-        fork_node_id = self.fork_node_id
 
         implementation = self.implementation
 
@@ -59,6 +53,8 @@ class Fork:
         intermediate_snapshot_id = self.intermediate_snapshot_id
 
         operation_id = self.operation_id
+
+        child_run_id = self.child_run_id
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -69,12 +65,8 @@ class Fork:
             field_dict["tenantId"] = tenant_id
         if source_sandbox_id is not UNSET:
             field_dict["sourceSandboxId"] = source_sandbox_id
-        if source_snapshot_id is not UNSET:
-            field_dict["sourceSnapshotId"] = source_snapshot_id
         if child_sandbox_id is not UNSET:
             field_dict["childSandboxId"] = child_sandbox_id
-        if fork_node_id is not UNSET:
-            field_dict["forkNodeId"] = fork_node_id
         if implementation is not UNSET:
             field_dict["implementation"] = implementation
         if effective_semantics_json is not UNSET:
@@ -83,6 +75,8 @@ class Fork:
             field_dict["intermediateSnapshotId"] = intermediate_snapshot_id
         if operation_id is not UNSET:
             field_dict["operationId"] = operation_id
+        if child_run_id is not UNSET:
+            field_dict["childRunId"] = child_run_id
 
         return field_dict
 
@@ -95,11 +89,7 @@ class Fork:
 
         source_sandbox_id = d.pop("sourceSandboxId", UNSET)
 
-        source_snapshot_id = d.pop("sourceSnapshotId", UNSET)
-
         child_sandbox_id = d.pop("childSandboxId", UNSET)
-
-        fork_node_id = d.pop("forkNodeId", UNSET)
 
         implementation = d.pop("implementation", UNSET)
 
@@ -109,17 +99,18 @@ class Fork:
 
         operation_id = d.pop("operationId", UNSET)
 
+        child_run_id = d.pop("childRunId", UNSET)
+
         fork = cls(
             id=id,
             tenant_id=tenant_id,
             source_sandbox_id=source_sandbox_id,
-            source_snapshot_id=source_snapshot_id,
             child_sandbox_id=child_sandbox_id,
-            fork_node_id=fork_node_id,
             implementation=implementation,
             effective_semantics_json=effective_semantics_json,
             intermediate_snapshot_id=intermediate_snapshot_id,
             operation_id=operation_id,
+            child_run_id=child_run_id,
         )
 
         fork.additional_properties = d

@@ -6,22 +6,22 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.put_saved_view_request import PutSavedViewRequest
-from ...models.saved_view import SavedView
+from ...models.stop_sandbox_request import StopSandboxRequest
+from ...models.stop_sandbox_response import StopSandboxResponse
 from ...types import Response
 
 
 def _get_kwargs(
-    name: str,
+    id: str,
     *,
-    body: PutSavedViewRequest,
+    body: StopSandboxRequest,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
 
     _kwargs: dict[str, Any] = {
-        "method": "put",
-        "url": "/v1/telemetry/views/{name}".format(
-            name=quote(str(name), safe=""),
+        "method": "post",
+        "url": "/v1/sandboxes/{id}:stop".format(
+            id=quote(str(id), safe=""),
         ),
     }
 
@@ -33,9 +33,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> SavedView | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> StopSandboxResponse | None:
     if response.status_code == 200:
-        response_200 = SavedView.from_dict(response.json())
+        response_200 = StopSandboxResponse.from_dict(response.json())
 
         return response_200
 
@@ -45,7 +45,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[SavedView]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[StopSandboxResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -55,28 +55,30 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    name: str,
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PutSavedViewRequest,
-) -> Response[SavedView]:
-    """Create or replace a saved SQL view (validated before store).
+    body: StopSandboxRequest,
+) -> Response[StopSandboxResponse]:
+    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
+     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
+     which tears the sandbox down entirely. Work that completed before the stop is reported as
+     succeeded rather than interrupted.
 
     Args:
-        name (str):
-        body (PutSavedViewRequest): Create or replace a saved view by name (upsert). The path
-            `{name}` is authoritative.
+        id (str):
+        body (StopSandboxRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[SavedView]
+        Response[StopSandboxResponse]
     """
 
     kwargs = _get_kwargs(
-        name=name,
+        id=id,
         body=body,
     )
 
@@ -88,56 +90,60 @@ def sync_detailed(
 
 
 def sync(
-    name: str,
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PutSavedViewRequest,
-) -> SavedView | None:
-    """Create or replace a saved SQL view (validated before store).
+    body: StopSandboxRequest,
+) -> StopSandboxResponse | None:
+    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
+     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
+     which tears the sandbox down entirely. Work that completed before the stop is reported as
+     succeeded rather than interrupted.
 
     Args:
-        name (str):
-        body (PutSavedViewRequest): Create or replace a saved view by name (upsert). The path
-            `{name}` is authoritative.
+        id (str):
+        body (StopSandboxRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        SavedView
+        StopSandboxResponse
     """
 
     return sync_detailed(
-        name=name,
+        id=id,
         client=client,
         body=body,
     ).parsed
 
 
 async def asyncio_detailed(
-    name: str,
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PutSavedViewRequest,
-) -> Response[SavedView]:
-    """Create or replace a saved SQL view (validated before store).
+    body: StopSandboxRequest,
+) -> Response[StopSandboxResponse]:
+    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
+     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
+     which tears the sandbox down entirely. Work that completed before the stop is reported as
+     succeeded rather than interrupted.
 
     Args:
-        name (str):
-        body (PutSavedViewRequest): Create or replace a saved view by name (upsert). The path
-            `{name}` is authoritative.
+        id (str):
+        body (StopSandboxRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[SavedView]
+        Response[StopSandboxResponse]
     """
 
     kwargs = _get_kwargs(
-        name=name,
+        id=id,
         body=body,
     )
 
@@ -147,29 +153,31 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-    name: str,
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: PutSavedViewRequest,
-) -> SavedView | None:
-    """Create or replace a saved SQL view (validated before store).
+    body: StopSandboxRequest,
+) -> StopSandboxResponse | None:
+    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
+     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
+     which tears the sandbox down entirely. Work that completed before the stop is reported as
+     succeeded rather than interrupted.
 
     Args:
-        name (str):
-        body (PutSavedViewRequest): Create or replace a saved view by name (upsert). The path
-            `{name}` is authoritative.
+        id (str):
+        body (StopSandboxRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        SavedView
+        StopSandboxResponse
     """
 
     return (
         await asyncio_detailed(
-            name=name,
+            id=id,
             client=client,
             body=body,
         )

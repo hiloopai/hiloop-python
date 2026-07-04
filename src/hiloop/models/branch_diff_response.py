@@ -9,7 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.row import Row
+    from ..models.branch_diff_response_rows_item import BranchDiffResponseRowsItem
 
 
 T = TypeVar("T", bound="BranchDiffResponse")
@@ -19,11 +19,12 @@ T = TypeVar("T", bound="BranchDiffResponse")
 class BranchDiffResponse:
     """
     Attributes:
-        rows (list[Row] | Unset): Events present under `path_a` but not under `path_b`, projected to the diff key
-            columns.
+        rows (list[BranchDiffResponseRowsItem] | Unset): Events present in run A but not in run B, projected to the diff
+            key columns (one flat JSON
+             object per row, same canonical row encoding as QueryResponse).
     """
 
-    rows: list[Row] | Unset = UNSET
+    rows: list[BranchDiffResponseRowsItem] | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -44,15 +45,15 @@ class BranchDiffResponse:
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.row import Row
+        from ..models.branch_diff_response_rows_item import BranchDiffResponseRowsItem
 
         d = dict(src_dict)
         _rows = d.pop("rows", UNSET)
-        rows: list[Row] | Unset = UNSET
+        rows: list[BranchDiffResponseRowsItem] | Unset = UNSET
         if _rows is not UNSET:
             rows = []
             for rows_item_data in _rows:
-                rows_item = Row.from_dict(rows_item_data)
+                rows_item = BranchDiffResponseRowsItem.from_dict(rows_item_data)
 
                 rows.append(rows_item)
 

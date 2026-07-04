@@ -9,58 +9,53 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.rollup_spec import RollupSpec
+    from ..models.tenant_egress_policy import TenantEgressPolicy
 
 
-T = TypeVar("T", bound="RollupRequest")
+T = TypeVar("T", bound="GetTenantEgressPolicyResponse")
 
 
 @_attrs_define
-class RollupRequest:
+class GetTenantEgressPolicyResponse:
     """
     Attributes:
-        spec (RollupSpec | Unset): A Q4 rollup: columnar aggregation over the promoted token/cost/latency/status
-            columns, grouped by
-             gen_ai_model and a fixed-width wall-clock time bucket. Scoped to a single run when `run_id` is set,
-             or across every run for the tenant when it is empty. Restricted to the `llm` signal so non-llm
-             events never form a NULL-model group. The tenant is taken from request identity, never from this
-             body.
+        policy (TenantEgressPolicy | Unset): A tenant's baseline egress policy — one per tenant.
     """
 
-    spec: RollupSpec | Unset = UNSET
+    policy: TenantEgressPolicy | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        spec: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.spec, Unset):
-            spec = self.spec.to_dict()
+        policy: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.policy, Unset):
+            policy = self.policy.to_dict()
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if spec is not UNSET:
-            field_dict["spec"] = spec
+        if policy is not UNSET:
+            field_dict["policy"] = policy
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.rollup_spec import RollupSpec
+        from ..models.tenant_egress_policy import TenantEgressPolicy
 
         d = dict(src_dict)
-        _spec = d.pop("spec", UNSET)
-        spec: RollupSpec | Unset
-        if isinstance(_spec, Unset):
-            spec = UNSET
+        _policy = d.pop("policy", UNSET)
+        policy: TenantEgressPolicy | Unset
+        if isinstance(_policy, Unset):
+            policy = UNSET
         else:
-            spec = RollupSpec.from_dict(_spec)
+            policy = TenantEgressPolicy.from_dict(_policy)
 
-        rollup_request = cls(
-            spec=spec,
+        get_tenant_egress_policy_response = cls(
+            policy=policy,
         )
 
-        rollup_request.additional_properties = d
-        return rollup_request
+        get_tenant_egress_policy_response.additional_properties = d
+        return get_tenant_egress_policy_response
 
     @property
     def additional_keys(self) -> list[str]:

@@ -11,7 +11,7 @@ T = TypeVar("T", bound="PutDataViewRequestSpec")
 
 @_attrs_define
 class PutDataViewRequestSpec:
-    """The structured spec (opaque JSON, the engine's tagged `DataViewSpec`). Compile-validated before
+    """The data-view spec (opaque JSON, the engine's tagged `DataViewSpec`). Compile-validated before
     store.
 
     """

@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from ..models.capture_spec import CaptureSpec
     from ..models.egress_policy import EgressPolicy
     from ..models.fork_sandbox_request_labels import ForkSandboxRequestLabels
+    from ..models.lifecycle_spec import LifecycleSpec
     from ..models.resource_spec import ResourceSpec
     from ..models.sandbox_image import SandboxImage
     from ..models.secret_binding import SecretBinding
@@ -26,8 +27,6 @@ class ForkSandboxRequest:
     """
     Attributes:
         source_sandbox_id (str | Unset):
-        parent_fork_node_id (str | Unset):
-        child_fork_node_id (str | Unset):
         project_id (str | Unset):
         name (str | Unset):
         image (SandboxImage | Unset):
@@ -43,11 +42,23 @@ class ForkSandboxRequest:
              runtime supports.
         secrets (list[SecretBinding] | Unset): Secret bindings for the child sandbox. Resolved per child; never
             inherited from the snapshot.
+        parent_run_id (str | Unset): The run being forked from. The fork mints a child run beneath it.
+        branch_event_id (str | Unset): The parent event id the child forks at — the divergence point on the parent's
+            timeline. Empty
+             forks at the parent's current head.
+        branch_hlc_wall_ns (str | Unset): The parent branch-point wall-clock time in nanoseconds that pairs with
+            branch_event_id. Zero
+             when forking at the head.
+        branch_hlc_logical (str | Unset): The parent branch-point logical tiebreak that pairs with branch_hlc_wall_ns.
+        label (str | Unset): An optional human-readable label for the child run the fork mints. When empty, the server
+             assigns a friendly fallback name.
+        lifecycle (LifecycleSpec | Unset): Runtime lease policy. Omitted, or lease_secs=0, uses the server default. This
+            intentionally exposes
+             only the expiry control needed by public callers; process defaults, mounts, environment, and user
+             remain server-managed in the first runtime slice.
     """
 
     source_sandbox_id: str | Unset = UNSET
-    parent_fork_node_id: str | Unset = UNSET
-    child_fork_node_id: str | Unset = UNSET
     project_id: str | Unset = UNSET
     name: str | Unset = UNSET
     image: SandboxImage | Unset = UNSET
@@ -59,14 +70,16 @@ class ForkSandboxRequest:
     capture: CaptureSpec | Unset = UNSET
     egress: EgressPolicy | Unset = UNSET
     secrets: list[SecretBinding] | Unset = UNSET
+    parent_run_id: str | Unset = UNSET
+    branch_event_id: str | Unset = UNSET
+    branch_hlc_wall_ns: str | Unset = UNSET
+    branch_hlc_logical: str | Unset = UNSET
+    label: str | Unset = UNSET
+    lifecycle: LifecycleSpec | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         source_sandbox_id = self.source_sandbox_id
-
-        parent_fork_node_id = self.parent_fork_node_id
-
-        child_fork_node_id = self.child_fork_node_id
 
         project_id = self.project_id
 
@@ -110,15 +123,25 @@ class ForkSandboxRequest:
                 secrets_item = secrets_item_data.to_dict()
                 secrets.append(secrets_item)
 
+        parent_run_id = self.parent_run_id
+
+        branch_event_id = self.branch_event_id
+
+        branch_hlc_wall_ns = self.branch_hlc_wall_ns
+
+        branch_hlc_logical = self.branch_hlc_logical
+
+        label = self.label
+
+        lifecycle: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.lifecycle, Unset):
+            lifecycle = self.lifecycle.to_dict()
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if source_sandbox_id is not UNSET:
             field_dict["sourceSandboxId"] = source_sandbox_id
-        if parent_fork_node_id is not UNSET:
-            field_dict["parentForkNodeId"] = parent_fork_node_id
-        if child_fork_node_id is not UNSET:
-            field_dict["childForkNodeId"] = child_fork_node_id
         if project_id is not UNSET:
             field_dict["projectId"] = project_id
         if name is not UNSET:
@@ -141,6 +164,18 @@ class ForkSandboxRequest:
             field_dict["egress"] = egress
         if secrets is not UNSET:
             field_dict["secrets"] = secrets
+        if parent_run_id is not UNSET:
+            field_dict["parentRunId"] = parent_run_id
+        if branch_event_id is not UNSET:
+            field_dict["branchEventId"] = branch_event_id
+        if branch_hlc_wall_ns is not UNSET:
+            field_dict["branchHlcWallNs"] = branch_hlc_wall_ns
+        if branch_hlc_logical is not UNSET:
+            field_dict["branchHlcLogical"] = branch_hlc_logical
+        if label is not UNSET:
+            field_dict["label"] = label
+        if lifecycle is not UNSET:
+            field_dict["lifecycle"] = lifecycle
 
         return field_dict
 
@@ -150,16 +185,13 @@ class ForkSandboxRequest:
         from ..models.capture_spec import CaptureSpec
         from ..models.egress_policy import EgressPolicy
         from ..models.fork_sandbox_request_labels import ForkSandboxRequestLabels
+        from ..models.lifecycle_spec import LifecycleSpec
         from ..models.resource_spec import ResourceSpec
         from ..models.sandbox_image import SandboxImage
         from ..models.secret_binding import SecretBinding
 
         d = dict(src_dict)
         source_sandbox_id = d.pop("sourceSandboxId", UNSET)
-
-        parent_fork_node_id = d.pop("parentForkNodeId", UNSET)
-
-        child_fork_node_id = d.pop("childForkNodeId", UNSET)
 
         project_id = d.pop("projectId", UNSET)
 
@@ -222,10 +254,25 @@ class ForkSandboxRequest:
 
                 secrets.append(secrets_item)
 
+        parent_run_id = d.pop("parentRunId", UNSET)
+
+        branch_event_id = d.pop("branchEventId", UNSET)
+
+        branch_hlc_wall_ns = d.pop("branchHlcWallNs", UNSET)
+
+        branch_hlc_logical = d.pop("branchHlcLogical", UNSET)
+
+        label = d.pop("label", UNSET)
+
+        _lifecycle = d.pop("lifecycle", UNSET)
+        lifecycle: LifecycleSpec | Unset
+        if isinstance(_lifecycle, Unset):
+            lifecycle = UNSET
+        else:
+            lifecycle = LifecycleSpec.from_dict(_lifecycle)
+
         fork_sandbox_request = cls(
             source_sandbox_id=source_sandbox_id,
-            parent_fork_node_id=parent_fork_node_id,
-            child_fork_node_id=child_fork_node_id,
             project_id=project_id,
             name=name,
             image=image,
@@ -237,6 +284,12 @@ class ForkSandboxRequest:
             capture=capture,
             egress=egress,
             secrets=secrets,
+            parent_run_id=parent_run_id,
+            branch_event_id=branch_event_id,
+            branch_hlc_wall_ns=branch_hlc_wall_ns,
+            branch_hlc_logical=branch_hlc_logical,
+            label=label,
+            lifecycle=lifecycle,
         )
 
         fork_sandbox_request.additional_properties = d

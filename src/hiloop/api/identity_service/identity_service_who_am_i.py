@@ -44,8 +44,9 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[WhoAmIResponse]:
-    """Echo the caller's identity. Acts as both a health probe and an identity sanity-check, and is the
-     endpoint the generated OpenAPI, SDKs, and CLI consume.
+    """Resolve the caller's identity: the acting principal (kind, id, email, key id/name) and tenant.
+     Acts as both a health probe and an identity sanity-check, and is the endpoint the generated
+     OpenAPI, SDKs, and CLI consume.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -68,8 +69,9 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 ) -> WhoAmIResponse | None:
-    """Echo the caller's identity. Acts as both a health probe and an identity sanity-check, and is the
-     endpoint the generated OpenAPI, SDKs, and CLI consume.
+    """Resolve the caller's identity: the acting principal (kind, id, email, key id/name) and tenant.
+     Acts as both a health probe and an identity sanity-check, and is the endpoint the generated
+     OpenAPI, SDKs, and CLI consume.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -88,8 +90,9 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[WhoAmIResponse]:
-    """Echo the caller's identity. Acts as both a health probe and an identity sanity-check, and is the
-     endpoint the generated OpenAPI, SDKs, and CLI consume.
+    """Resolve the caller's identity: the acting principal (kind, id, email, key id/name) and tenant.
+     Acts as both a health probe and an identity sanity-check, and is the endpoint the generated
+     OpenAPI, SDKs, and CLI consume.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -110,8 +113,9 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 ) -> WhoAmIResponse | None:
-    """Echo the caller's identity. Acts as both a health probe and an identity sanity-check, and is the
-     endpoint the generated OpenAPI, SDKs, and CLI consume.
+    """Resolve the caller's identity: the acting principal (kind, id, email, key id/name) and tenant.
+     Acts as both a health probe and an identity sanity-check, and is the endpoint the generated
+     OpenAPI, SDKs, and CLI consume.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

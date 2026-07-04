@@ -5,20 +5,20 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.rollup_request import RollupRequest
-from ...models.rollup_response import RollupResponse
+from ...models.set_tenant_egress_policy_request import SetTenantEgressPolicyRequest
+from ...models.set_tenant_egress_policy_response import SetTenantEgressPolicyResponse
 from ...types import Response
 
 
 def _get_kwargs(
     *,
-    body: RollupRequest,
+    body: SetTenantEgressPolicyRequest,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
 
     _kwargs: dict[str, Any] = {
-        "method": "post",
-        "url": "/v1/telemetry/rollup",
+        "method": "put",
+        "url": "/v1/tenant/egress-policy",
     }
 
     _kwargs["json"] = body.to_dict()
@@ -29,9 +29,11 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> RollupResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> SetTenantEgressPolicyResponse | None:
     if response.status_code == 200:
-        response_200 = RollupResponse.from_dict(response.json())
+        response_200 = SetTenantEgressPolicyResponse.from_dict(response.json())
 
         return response_200
 
@@ -41,7 +43,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[RollupResponse]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[SetTenantEgressPolicyResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -53,20 +57,19 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body: RollupRequest,
-) -> Response[RollupResponse]:
-    """Roll up token/cost/latency/error-rate metrics by model and time-bucket, scoped to one run or
-     across all of the tenant's runs when `run_id` is omitted.
+    body: SetTenantEgressPolicyRequest,
+) -> Response[SetTenantEgressPolicyResponse]:
+    """Set the caller's tenant baseline egress policy. Requires an owner or admin in the tenant.
 
     Args:
-        body (RollupRequest):
+        body (SetTenantEgressPolicyRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[RollupResponse]
+        Response[SetTenantEgressPolicyResponse]
     """
 
     kwargs = _get_kwargs(
@@ -83,20 +86,19 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient | Client,
-    body: RollupRequest,
-) -> RollupResponse | None:
-    """Roll up token/cost/latency/error-rate metrics by model and time-bucket, scoped to one run or
-     across all of the tenant's runs when `run_id` is omitted.
+    body: SetTenantEgressPolicyRequest,
+) -> SetTenantEgressPolicyResponse | None:
+    """Set the caller's tenant baseline egress policy. Requires an owner or admin in the tenant.
 
     Args:
-        body (RollupRequest):
+        body (SetTenantEgressPolicyRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        RollupResponse
+        SetTenantEgressPolicyResponse
     """
 
     return sync_detailed(
@@ -108,20 +110,19 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body: RollupRequest,
-) -> Response[RollupResponse]:
-    """Roll up token/cost/latency/error-rate metrics by model and time-bucket, scoped to one run or
-     across all of the tenant's runs when `run_id` is omitted.
+    body: SetTenantEgressPolicyRequest,
+) -> Response[SetTenantEgressPolicyResponse]:
+    """Set the caller's tenant baseline egress policy. Requires an owner or admin in the tenant.
 
     Args:
-        body (RollupRequest):
+        body (SetTenantEgressPolicyRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[RollupResponse]
+        Response[SetTenantEgressPolicyResponse]
     """
 
     kwargs = _get_kwargs(
@@ -136,20 +137,19 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
-    body: RollupRequest,
-) -> RollupResponse | None:
-    """Roll up token/cost/latency/error-rate metrics by model and time-bucket, scoped to one run or
-     across all of the tenant's runs when `run_id` is omitted.
+    body: SetTenantEgressPolicyRequest,
+) -> SetTenantEgressPolicyResponse | None:
+    """Set the caller's tenant baseline egress policy. Requires an owner or admin in the tenant.
 
     Args:
-        body (RollupRequest):
+        body (SetTenantEgressPolicyRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        RollupResponse
+        SetTenantEgressPolicyResponse
     """
 
     return (

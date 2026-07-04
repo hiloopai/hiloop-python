@@ -9,58 +9,53 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.saved_view import SavedView
+    from ..models.tenant_egress_policy import TenantEgressPolicy
 
 
-T = TypeVar("T", bound="ListSavedViewsResponse")
+T = TypeVar("T", bound="SetTenantEgressPolicyResponse")
 
 
 @_attrs_define
-class ListSavedViewsResponse:
+class SetTenantEgressPolicyResponse:
     """
     Attributes:
-        views (list[SavedView] | Unset): The tenant's saved views, in a stable order (by name).
+        policy (TenantEgressPolicy | Unset): A tenant's baseline egress policy — one per tenant.
     """
 
-    views: list[SavedView] | Unset = UNSET
+    policy: TenantEgressPolicy | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        views: list[dict[str, Any]] | Unset = UNSET
-        if not isinstance(self.views, Unset):
-            views = []
-            for views_item_data in self.views:
-                views_item = views_item_data.to_dict()
-                views.append(views_item)
+        policy: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.policy, Unset):
+            policy = self.policy.to_dict()
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if views is not UNSET:
-            field_dict["views"] = views
+        if policy is not UNSET:
+            field_dict["policy"] = policy
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.saved_view import SavedView
+        from ..models.tenant_egress_policy import TenantEgressPolicy
 
         d = dict(src_dict)
-        _views = d.pop("views", UNSET)
-        views: list[SavedView] | Unset = UNSET
-        if _views is not UNSET:
-            views = []
-            for views_item_data in _views:
-                views_item = SavedView.from_dict(views_item_data)
+        _policy = d.pop("policy", UNSET)
+        policy: TenantEgressPolicy | Unset
+        if isinstance(_policy, Unset):
+            policy = UNSET
+        else:
+            policy = TenantEgressPolicy.from_dict(_policy)
 
-                views.append(views_item)
-
-        list_saved_views_response = cls(
-            views=views,
+        set_tenant_egress_policy_response = cls(
+            policy=policy,
         )
 
-        list_saved_views_response.additional_properties = d
-        return list_saved_views_response
+        set_tenant_egress_policy_response.additional_properties = d
+        return set_tenant_egress_policy_response
 
     @property
     def additional_keys(self) -> list[str]:

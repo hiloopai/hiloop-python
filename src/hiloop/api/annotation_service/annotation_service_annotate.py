@@ -59,7 +59,9 @@ def sync_detailed(
      payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRequest): A point annotation about a single target event.
+        body (AnnotateRequest): One annotation: run-scoped (optionally targeting a single event
+            within the run) or
+             project-scoped (no run — durable cross-run knowledge that outlives any sandbox).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -89,7 +91,9 @@ def sync(
      payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRequest): A point annotation about a single target event.
+        body (AnnotateRequest): One annotation: run-scoped (optionally targeting a single event
+            within the run) or
+             project-scoped (no run — durable cross-run knowledge that outlives any sandbox).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -114,7 +118,9 @@ async def asyncio_detailed(
      payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRequest): A point annotation about a single target event.
+        body (AnnotateRequest): One annotation: run-scoped (optionally targeting a single event
+            within the run) or
+             project-scoped (no run — durable cross-run knowledge that outlives any sandbox).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -142,7 +148,9 @@ async def asyncio(
      payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRequest): A point annotation about a single target event.
+        body (AnnotateRequest): One annotation: run-scoped (optionally targeting a single event
+            within the run) or
+             project-scoped (no run — durable cross-run knowledge that outlives any sandbox).
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

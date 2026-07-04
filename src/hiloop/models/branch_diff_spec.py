@@ -13,65 +13,54 @@ T = TypeVar("T", bound="BranchDiffSpec")
 
 @_attrs_define
 class BranchDiffSpec:
-    """A branch-diff (Q3): the events under subtree `path_a` that are absent under subtree `path_b`,
-    within one run. This is the differentiated tree-native query — two anchored `fork_path` prefix
-    scans, set-differenced on a semantic key (signal, name, attributes). The tenant is taken from
-    request identity, never from this body.
+    """A branch-diff (Q3): the events unique to run A that are absent from run B, across two runs sharing
+    a tree. This is the differentiated tree-native query — each run's lineage subtree is resolved
+    server-side and the two are set-differenced on a semantic key (signal, name, attributes). The
+    tenant is taken from request identity, never from this body.
 
        Attributes:
-           run_id (str | Unset): The run (session) both branches belong to. Required.
-           path_a (str | Unset): The subtree whose unique events to return (the "A" branch). Required; anchored by
-               `fork_path`
-                prefix (the node plus its descendants).
-           path_b (str | Unset): The subtree to subtract (the "B" branch). Required.
            signal (str | Unset): Optional signal to restrict the diff to (e.g. "llm"); empty means all signals.
+           run_id_a (str | Unset): The run whose unique events to return (the "A" branch). Required.
+           run_id_b (str | Unset): The run to subtract (the "B" branch). Required.
     """
 
-    run_id: str | Unset = UNSET
-    path_a: str | Unset = UNSET
-    path_b: str | Unset = UNSET
     signal: str | Unset = UNSET
+    run_id_a: str | Unset = UNSET
+    run_id_b: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        run_id = self.run_id
-
-        path_a = self.path_a
-
-        path_b = self.path_b
-
         signal = self.signal
+
+        run_id_a = self.run_id_a
+
+        run_id_b = self.run_id_b
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if run_id is not UNSET:
-            field_dict["runId"] = run_id
-        if path_a is not UNSET:
-            field_dict["pathA"] = path_a
-        if path_b is not UNSET:
-            field_dict["pathB"] = path_b
         if signal is not UNSET:
             field_dict["signal"] = signal
+        if run_id_a is not UNSET:
+            field_dict["runIdA"] = run_id_a
+        if run_id_b is not UNSET:
+            field_dict["runIdB"] = run_id_b
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_id = d.pop("runId", UNSET)
-
-        path_a = d.pop("pathA", UNSET)
-
-        path_b = d.pop("pathB", UNSET)
-
         signal = d.pop("signal", UNSET)
 
+        run_id_a = d.pop("runIdA", UNSET)
+
+        run_id_b = d.pop("runIdB", UNSET)
+
         branch_diff_spec = cls(
-            run_id=run_id,
-            path_a=path_a,
-            path_b=path_b,
             signal=signal,
+            run_id_a=run_id_a,
+            run_id_b=run_id_b,
         )
 
         branch_diff_spec.additional_properties = d

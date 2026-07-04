@@ -46,7 +46,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[ListDataViewsResponse]:
-    """List the tenant's structured data views (own + un-overridden builtins).
+    """List the tenant's data views.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -69,7 +69,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
 ) -> ListDataViewsResponse | None:
-    """List the tenant's structured data views (own + un-overridden builtins).
+    """List the tenant's data views.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -88,7 +88,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
 ) -> Response[ListDataViewsResponse]:
-    """List the tenant's structured data views (own + un-overridden builtins).
+    """List the tenant's data views.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -109,7 +109,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
 ) -> ListDataViewsResponse | None:
-    """List the tenant's structured data views (own + un-overridden builtins).
+    """List the tenant's data views.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

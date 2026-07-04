@@ -23,9 +23,17 @@ class Sandbox:
         observed_state (str | Unset):
         active_generation (str | Unset):
         version (str | Unset):
-        fork_node_id (str | Unset): Fork-tree node that represents this sandbox as a fork source. Present for project-
-            backed
-             sandboxes; absent project-less sandboxes are not fork sources.
+        run_id (str | Unset): The run this sandbox is (or was) executing. Present for project-backed sandboxes; project-
+            less
+             sandboxes have no run.
+        description (str | Unset): User-assigned free-text description. Empty when unset.
+        created_by (str | Unset): Stable id of the principal that created the sandbox — the API key (or user) that
+            performed the
+             create, recorded server-side. Empty when unrecorded.
+        created_at (str | Unset): When the sandbox was created (RFC 3339).
+        updated_at (str | Unset): When the sandbox record was last updated (RFC 3339). Equal to created_at until the
+            first update.
+        gpus (str | Unset): Accelerators requested by the sandbox's spec. Zero when none were requested.
     """
 
     id: str | Unset = UNSET
@@ -36,7 +44,12 @@ class Sandbox:
     observed_state: str | Unset = UNSET
     active_generation: str | Unset = UNSET
     version: str | Unset = UNSET
-    fork_node_id: str | Unset = UNSET
+    run_id: str | Unset = UNSET
+    description: str | Unset = UNSET
+    created_by: str | Unset = UNSET
+    created_at: str | Unset = UNSET
+    updated_at: str | Unset = UNSET
+    gpus: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -56,7 +69,17 @@ class Sandbox:
 
         version = self.version
 
-        fork_node_id = self.fork_node_id
+        run_id = self.run_id
+
+        description = self.description
+
+        created_by = self.created_by
+
+        created_at = self.created_at
+
+        updated_at = self.updated_at
+
+        gpus = self.gpus
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -77,8 +100,18 @@ class Sandbox:
             field_dict["activeGeneration"] = active_generation
         if version is not UNSET:
             field_dict["version"] = version
-        if fork_node_id is not UNSET:
-            field_dict["forkNodeId"] = fork_node_id
+        if run_id is not UNSET:
+            field_dict["runId"] = run_id
+        if description is not UNSET:
+            field_dict["description"] = description
+        if created_by is not UNSET:
+            field_dict["createdBy"] = created_by
+        if created_at is not UNSET:
+            field_dict["createdAt"] = created_at
+        if updated_at is not UNSET:
+            field_dict["updatedAt"] = updated_at
+        if gpus is not UNSET:
+            field_dict["gpus"] = gpus
 
         return field_dict
 
@@ -101,7 +134,17 @@ class Sandbox:
 
         version = d.pop("version", UNSET)
 
-        fork_node_id = d.pop("forkNodeId", UNSET)
+        run_id = d.pop("runId", UNSET)
+
+        description = d.pop("description", UNSET)
+
+        created_by = d.pop("createdBy", UNSET)
+
+        created_at = d.pop("createdAt", UNSET)
+
+        updated_at = d.pop("updatedAt", UNSET)
+
+        gpus = d.pop("gpus", UNSET)
 
         sandbox = cls(
             id=id,
@@ -112,7 +155,12 @@ class Sandbox:
             observed_state=observed_state,
             active_generation=active_generation,
             version=version,
-            fork_node_id=fork_node_id,
+            run_id=run_id,
+            description=description,
+            created_by=created_by,
+            created_at=created_at,
+            updated_at=updated_at,
+            gpus=gpus,
         )
 
         sandbox.additional_properties = d

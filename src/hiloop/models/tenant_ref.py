@@ -1,63 +1,58 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
 
-if TYPE_CHECKING:
-    from ..models.row_columns import RowColumns
-
-
-T = TypeVar("T", bound="Row")
+T = TypeVar("T", bound="TenantRef")
 
 
 @_attrs_define
-class Row:
-    """One result row: column name -> typed value. For aggregate surfaces (rollup) the columns are the
-    grouping columns plus one per aggregate metric (e.g. "p95_cost_usd"). Reused by the view service.
+class TenantRef:
+    """The tenant the caller acts in.
 
-       Attributes:
-           columns (RowColumns | Unset):
+    Attributes:
+        id (str | Unset): The tenant id.
+        slug (str | Unset): The tenant slug.
     """
 
-    columns: RowColumns | Unset = UNSET
+    id: str | Unset = UNSET
+    slug: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        columns: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.columns, Unset):
-            columns = self.columns.to_dict()
+        id = self.id
+
+        slug = self.slug
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if columns is not UNSET:
-            field_dict["columns"] = columns
+        if id is not UNSET:
+            field_dict["id"] = id
+        if slug is not UNSET:
+            field_dict["slug"] = slug
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.row_columns import RowColumns
-
         d = dict(src_dict)
-        _columns = d.pop("columns", UNSET)
-        columns: RowColumns | Unset
-        if isinstance(_columns, Unset):
-            columns = UNSET
-        else:
-            columns = RowColumns.from_dict(_columns)
+        id = d.pop("id", UNSET)
 
-        row = cls(
-            columns=columns,
+        slug = d.pop("slug", UNSET)
+
+        tenant_ref = cls(
+            id=id,
+            slug=slug,
         )
 
-        row.additional_properties = d
-        return row
+        tenant_ref.additional_properties = d
+        return tenant_ref
 
     @property
     def additional_keys(self) -> list[str]:

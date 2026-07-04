@@ -9,7 +9,8 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.identity import Identity
+    from ..models.principal import Principal
+    from ..models.tenant_ref import TenantRef
 
 
 T = TypeVar("T", bound="WhoAmIResponse")
@@ -19,41 +20,58 @@ T = TypeVar("T", bound="WhoAmIResponse")
 class WhoAmIResponse:
     """
     Attributes:
-        identity (Identity | Unset): The caller's identity, as resolved from their credential by the API edge. The API
-            trusts this
-             resolved identity; it does not re-authenticate.
+        principal (Principal | Unset): The acting principal, as resolved from the caller's credential by the API edge.
+            The API trusts
+             the edge-resolved identity; it does not re-authenticate.
+        tenant (TenantRef | Unset): The tenant the caller acts in.
     """
 
-    identity: Identity | Unset = UNSET
+    principal: Principal | Unset = UNSET
+    tenant: TenantRef | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        identity: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.identity, Unset):
-            identity = self.identity.to_dict()
+        principal: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.principal, Unset):
+            principal = self.principal.to_dict()
+
+        tenant: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.tenant, Unset):
+            tenant = self.tenant.to_dict()
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if identity is not UNSET:
-            field_dict["identity"] = identity
+        if principal is not UNSET:
+            field_dict["principal"] = principal
+        if tenant is not UNSET:
+            field_dict["tenant"] = tenant
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.identity import Identity
+        from ..models.principal import Principal
+        from ..models.tenant_ref import TenantRef
 
         d = dict(src_dict)
-        _identity = d.pop("identity", UNSET)
-        identity: Identity | Unset
-        if isinstance(_identity, Unset):
-            identity = UNSET
+        _principal = d.pop("principal", UNSET)
+        principal: Principal | Unset
+        if isinstance(_principal, Unset):
+            principal = UNSET
         else:
-            identity = Identity.from_dict(_identity)
+            principal = Principal.from_dict(_principal)
+
+        _tenant = d.pop("tenant", UNSET)
+        tenant: TenantRef | Unset
+        if isinstance(_tenant, Unset):
+            tenant = UNSET
+        else:
+            tenant = TenantRef.from_dict(_tenant)
 
         who_am_i_response = cls(
-            identity=identity,
+            principal=principal,
+            tenant=tenant,
         )
 
         who_am_i_response.additional_properties = d

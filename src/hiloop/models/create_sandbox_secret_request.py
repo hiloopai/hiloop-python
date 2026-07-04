@@ -21,7 +21,9 @@ class CreateSandboxSecretRequest:
         value (str | Unset): The secret value. WRITE-ONLY: stored encrypted and never returned by this API again; the
             proxy
              resolves it at request time.
-        dest_host (str | Unset): The outbound host to inject the value into (optional).
+        dest_host (str | Unset): The outbound host to inject the value into (optional). Must be a bare DNS hostname,
+            e.g.
+             `api.openai.com` — not a URL; stored in canonical lowercase form.
         dest_header (str | Unset): The header to inject the value as (optional; defaults by kind).
         scheme (str | Unset): The auth scheme prefix (optional; e.g. `Bearer`).
     """

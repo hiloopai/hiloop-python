@@ -9,58 +9,55 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.data_view import DataView
+    from ..models.run import Run
 
 
-T = TypeVar("T", bound="ListDataViewsResponse")
+T = TypeVar("T", bound="ForkRunResponse")
 
 
 @_attrs_define
-class ListDataViewsResponse:
+class ForkRunResponse:
     """
     Attributes:
-        views (list[DataView] | Unset): The tenant's structured data views.
+        run (Run | Unset): A run record (the subset the API returns). Intentionally carries no cost or spend roll-up:
+            the
+             product is generic and does not surface cost by default.
     """
 
-    views: list[DataView] | Unset = UNSET
+    run: Run | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        views: list[dict[str, Any]] | Unset = UNSET
-        if not isinstance(self.views, Unset):
-            views = []
-            for views_item_data in self.views:
-                views_item = views_item_data.to_dict()
-                views.append(views_item)
+        run: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.run, Unset):
+            run = self.run.to_dict()
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if views is not UNSET:
-            field_dict["views"] = views
+        if run is not UNSET:
+            field_dict["run"] = run
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.data_view import DataView
+        from ..models.run import Run
 
         d = dict(src_dict)
-        _views = d.pop("views", UNSET)
-        views: list[DataView] | Unset = UNSET
-        if _views is not UNSET:
-            views = []
-            for views_item_data in _views:
-                views_item = DataView.from_dict(views_item_data)
+        _run = d.pop("run", UNSET)
+        run: Run | Unset
+        if isinstance(_run, Unset):
+            run = UNSET
+        else:
+            run = Run.from_dict(_run)
 
-                views.append(views_item)
-
-        list_data_views_response = cls(
-            views=views,
+        fork_run_response = cls(
+            run=run,
         )
 
-        list_data_views_response.additional_properties = d
-        return list_data_views_response
+        fork_run_response.additional_properties = d
+        return fork_run_response
 
     @property
     def additional_keys(self) -> list[str]:

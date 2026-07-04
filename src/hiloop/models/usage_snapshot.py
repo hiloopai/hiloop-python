@@ -33,9 +33,6 @@ class UsageSnapshot:
         capacity (ReservedResources | Unset): Reserved resources summed over the active runtime instance of each in-use
             sandbox. These are the
              requested ("reserved") amounts the sandboxes asked for, not measured live utilization.
-        reclaimable (ReservedResources | Unset): Reserved resources summed over the active runtime instance of each in-
-            use sandbox. These are the
-             requested ("reserved") amounts the sandboxes asked for, not measured live utilization.
     """
 
     tenant_id: str | Unset = UNSET
@@ -43,7 +40,6 @@ class UsageSnapshot:
     sandbox_state_counts: list[SandboxStateCount] | Unset = UNSET
     reserved: ReservedResources | Unset = UNSET
     capacity: ReservedResources | Unset = UNSET
-    reclaimable: ReservedResources | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -66,10 +62,6 @@ class UsageSnapshot:
         if not isinstance(self.capacity, Unset):
             capacity = self.capacity.to_dict()
 
-        reclaimable: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.reclaimable, Unset):
-            reclaimable = self.reclaimable.to_dict()
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -83,8 +75,6 @@ class UsageSnapshot:
             field_dict["reserved"] = reserved
         if capacity is not UNSET:
             field_dict["capacity"] = capacity
-        if reclaimable is not UNSET:
-            field_dict["reclaimable"] = reclaimable
 
         return field_dict
 
@@ -121,20 +111,12 @@ class UsageSnapshot:
         else:
             capacity = ReservedResources.from_dict(_capacity)
 
-        _reclaimable = d.pop("reclaimable", UNSET)
-        reclaimable: ReservedResources | Unset
-        if isinstance(_reclaimable, Unset):
-            reclaimable = UNSET
-        else:
-            reclaimable = ReservedResources.from_dict(_reclaimable)
-
         usage_snapshot = cls(
             tenant_id=tenant_id,
             active_sandbox_count=active_sandbox_count,
             sandbox_state_counts=sandbox_state_counts,
             reserved=reserved,
             capacity=capacity,
-            reclaimable=reclaimable,
         )
 
         usage_snapshot.additional_properties = d

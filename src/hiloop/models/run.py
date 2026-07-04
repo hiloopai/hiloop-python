@@ -23,11 +23,27 @@ class Run:
            project_id (str | Unset): The project the run belongs to.
            label (str | Unset): An optional human-readable label.
            status (str | Unset): The run lifecycle status: pending, running, succeeded, failed, or canceled.
-           created_by (str | Unset): The user that created the run, when recorded (empty otherwise).
+           created_by (str | Unset): The stable id of the principal that created the run — the API key (or user) that
+               performed the
+                start or fork, recorded server-side. Empty when unrecorded.
            started_at (str | Unset): When the run started executing (RFC 3339), empty if it has not started.
            ended_at (str | Unset): When the run finished (RFC 3339), empty if it is still in flight.
            created_at (str | Unset): When the run record was created (RFC 3339).
-           live_fork_count (str | Unset): The number of active (non-archived) fork nodes in the run's fork tree.
+           parent_run_id (str | Unset): The run this run forked from. Empty for a tree root.
+           root_run_id (str | Unset): The root of this run's tree (equal to id for a root). Lets the whole tree resolve in
+               one
+                indexed lookup.
+           lineage_path (str | Unset): The materialized path of run ids from the root to this run, as a dotted label (e.g.
+                "root_ulid.child_ulid"). Sorts in creation order and addresses the subtree by prefix.
+           branch_event_id (str | Unset): The parent event id this run forked at — the divergence point on the parent's
+               timeline. Empty
+                for a tree root or a manually started new tree.
+           branch_hlc_wall_ns (str | Unset): The parent branch-point wall-clock time in nanoseconds (the cursor coordinate
+               the timeline
+                uses). Zero when there is no branch point.
+           branch_hlc_logical (str | Unset): The parent branch-point logical tiebreak that pairs with branch_hlc_wall_ns.
+               Zero when there is
+                no branch point.
     """
 
     id: str | Unset = UNSET
@@ -39,7 +55,12 @@ class Run:
     started_at: str | Unset = UNSET
     ended_at: str | Unset = UNSET
     created_at: str | Unset = UNSET
-    live_fork_count: str | Unset = UNSET
+    parent_run_id: str | Unset = UNSET
+    root_run_id: str | Unset = UNSET
+    lineage_path: str | Unset = UNSET
+    branch_event_id: str | Unset = UNSET
+    branch_hlc_wall_ns: str | Unset = UNSET
+    branch_hlc_logical: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -61,7 +82,17 @@ class Run:
 
         created_at = self.created_at
 
-        live_fork_count = self.live_fork_count
+        parent_run_id = self.parent_run_id
+
+        root_run_id = self.root_run_id
+
+        lineage_path = self.lineage_path
+
+        branch_event_id = self.branch_event_id
+
+        branch_hlc_wall_ns = self.branch_hlc_wall_ns
+
+        branch_hlc_logical = self.branch_hlc_logical
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -84,8 +115,18 @@ class Run:
             field_dict["endedAt"] = ended_at
         if created_at is not UNSET:
             field_dict["createdAt"] = created_at
-        if live_fork_count is not UNSET:
-            field_dict["liveForkCount"] = live_fork_count
+        if parent_run_id is not UNSET:
+            field_dict["parentRunId"] = parent_run_id
+        if root_run_id is not UNSET:
+            field_dict["rootRunId"] = root_run_id
+        if lineage_path is not UNSET:
+            field_dict["lineagePath"] = lineage_path
+        if branch_event_id is not UNSET:
+            field_dict["branchEventId"] = branch_event_id
+        if branch_hlc_wall_ns is not UNSET:
+            field_dict["branchHlcWallNs"] = branch_hlc_wall_ns
+        if branch_hlc_logical is not UNSET:
+            field_dict["branchHlcLogical"] = branch_hlc_logical
 
         return field_dict
 
@@ -110,7 +151,17 @@ class Run:
 
         created_at = d.pop("createdAt", UNSET)
 
-        live_fork_count = d.pop("liveForkCount", UNSET)
+        parent_run_id = d.pop("parentRunId", UNSET)
+
+        root_run_id = d.pop("rootRunId", UNSET)
+
+        lineage_path = d.pop("lineagePath", UNSET)
+
+        branch_event_id = d.pop("branchEventId", UNSET)
+
+        branch_hlc_wall_ns = d.pop("branchHlcWallNs", UNSET)
+
+        branch_hlc_logical = d.pop("branchHlcLogical", UNSET)
 
         run = cls(
             id=id,
@@ -122,7 +173,12 @@ class Run:
             started_at=started_at,
             ended_at=ended_at,
             created_at=created_at,
-            live_fork_count=live_fork_count,
+            parent_run_id=parent_run_id,
+            root_run_id=root_run_id,
+            lineage_path=lineage_path,
+            branch_event_id=branch_event_id,
+            branch_hlc_wall_ns=branch_hlc_wall_ns,
+            branch_hlc_logical=branch_hlc_logical,
         )
 
         run.additional_properties = d

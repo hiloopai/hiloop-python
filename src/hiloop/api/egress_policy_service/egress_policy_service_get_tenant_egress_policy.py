@@ -1,32 +1,29 @@
 from http import HTTPStatus
 from typing import Any
-from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.exec_output_event import ExecOutputEvent
+from ...models.get_tenant_egress_policy_response import GetTenantEgressPolicyResponse
 from ...types import Response
 
 
-def _get_kwargs(
-    execution_id: str,
-) -> dict[str, Any]:
+def _get_kwargs() -> dict[str, Any]:
 
     _kwargs: dict[str, Any] = {
         "method": "get",
-        "url": "/v1/executions/{execution_id}:stream".format(
-            execution_id=quote(str(execution_id), safe=""),
-        ),
+        "url": "/v1/tenant/egress-policy",
     }
 
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ExecOutputEvent | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> GetTenantEgressPolicyResponse | None:
     if response.status_code == 200:
-        response_200 = ExecOutputEvent.from_dict(response.json())
+        response_200 = GetTenantEgressPolicyResponse.from_dict(response.json())
 
         return response_200
 
@@ -36,7 +33,9 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ExecOutputEvent]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[GetTenantEgressPolicyResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -46,26 +45,20 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ExecOutputEvent]:
-    """Stream an execution's combined stdout/stderr until it exits.
-
-    Args:
-        execution_id (str):
+) -> Response[GetTenantEgressPolicyResponse]:
+    """Get the caller's tenant baseline egress policy. Returns the implicit default when none is set.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ExecOutputEvent]
+        Response[GetTenantEgressPolicyResponse]
     """
 
-    kwargs = _get_kwargs(
-        execution_id=execution_id,
-    )
+    kwargs = _get_kwargs()
 
     response = client.get_httpx_client().request(
         **kwargs,
@@ -75,50 +68,39 @@ def sync_detailed(
 
 
 def sync(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> ExecOutputEvent | None:
-    """Stream an execution's combined stdout/stderr until it exits.
-
-    Args:
-        execution_id (str):
+) -> GetTenantEgressPolicyResponse | None:
+    """Get the caller's tenant baseline egress policy. Returns the implicit default when none is set.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ExecOutputEvent
+        GetTenantEgressPolicyResponse
     """
 
     return sync_detailed(
-        execution_id=execution_id,
         client=client,
     ).parsed
 
 
 async def asyncio_detailed(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ExecOutputEvent]:
-    """Stream an execution's combined stdout/stderr until it exits.
-
-    Args:
-        execution_id (str):
+) -> Response[GetTenantEgressPolicyResponse]:
+    """Get the caller's tenant baseline egress policy. Returns the implicit default when none is set.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ExecOutputEvent]
+        Response[GetTenantEgressPolicyResponse]
     """
 
-    kwargs = _get_kwargs(
-        execution_id=execution_id,
-    )
+    kwargs = _get_kwargs()
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -126,26 +108,21 @@ async def asyncio_detailed(
 
 
 async def asyncio(
-    execution_id: str,
     *,
     client: AuthenticatedClient | Client,
-) -> ExecOutputEvent | None:
-    """Stream an execution's combined stdout/stderr until it exits.
-
-    Args:
-        execution_id (str):
+) -> GetTenantEgressPolicyResponse | None:
+    """Get the caller's tenant baseline egress policy. Returns the implicit default when none is set.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ExecOutputEvent
+        GetTenantEgressPolicyResponse
     """
 
     return (
         await asyncio_detailed(
-            execution_id=execution_id,
             client=client,
         )
     ).parsed

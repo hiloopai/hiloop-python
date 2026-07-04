@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.promoted_field import PromotedField
+
 
 T = TypeVar("T", bound="AnnotationSchema")
 
@@ -26,6 +30,9 @@ class AnnotationSchema:
         json_schema (str | Unset): The JSON Schema document (draft 2020-12) as a JSON string.
         archived_at (str | Unset): When the config was archived (RFC 3339), or empty if it is still live.
         created_at (str | Unset): When the config version was created (RFC 3339).
+        promoted_fields (list[PromotedField] | Unset): The fields this schema promotes from the payload into typed
+            columns, each with its server-assigned
+             slot. Empty when the schema promotes nothing.
     """
 
     id: str | Unset = UNSET
@@ -36,6 +43,7 @@ class AnnotationSchema:
     json_schema: str | Unset = UNSET
     archived_at: str | Unset = UNSET
     created_at: str | Unset = UNSET
+    promoted_fields: list[PromotedField] | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -54,6 +62,13 @@ class AnnotationSchema:
         archived_at = self.archived_at
 
         created_at = self.created_at
+
+        promoted_fields: list[dict[str, Any]] | Unset = UNSET
+        if not isinstance(self.promoted_fields, Unset):
+            promoted_fields = []
+            for promoted_fields_item_data in self.promoted_fields:
+                promoted_fields_item = promoted_fields_item_data.to_dict()
+                promoted_fields.append(promoted_fields_item)
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -74,11 +89,15 @@ class AnnotationSchema:
             field_dict["archivedAt"] = archived_at
         if created_at is not UNSET:
             field_dict["createdAt"] = created_at
+        if promoted_fields is not UNSET:
+            field_dict["promotedFields"] = promoted_fields
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.promoted_field import PromotedField
+
         d = dict(src_dict)
         id = d.pop("id", UNSET)
 
@@ -96,6 +115,15 @@ class AnnotationSchema:
 
         created_at = d.pop("createdAt", UNSET)
 
+        _promoted_fields = d.pop("promotedFields", UNSET)
+        promoted_fields: list[PromotedField] | Unset = UNSET
+        if _promoted_fields is not UNSET:
+            promoted_fields = []
+            for promoted_fields_item_data in _promoted_fields:
+                promoted_fields_item = PromotedField.from_dict(promoted_fields_item_data)
+
+                promoted_fields.append(promoted_fields_item)
+
         annotation_schema = cls(
             id=id,
             tenant_id=tenant_id,
@@ -105,6 +133,7 @@ class AnnotationSchema:
             json_schema=json_schema,
             archived_at=archived_at,
             created_at=created_at,
+            promoted_fields=promoted_fields,
         )
 
         annotation_schema.additional_properties = d

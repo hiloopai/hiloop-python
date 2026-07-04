@@ -21,12 +21,14 @@ class UsageSeriesPoint:
            reserved_cpus (str | Unset): Time-weighted average reserved virtual CPUs during the bucket.
            reserved_memory_mb (str | Unset): Time-weighted average reserved memory (MiB) during the bucket.
            reserved_gpus (str | Unset): Time-weighted average reserved accelerators during the bucket.
+           reserved_disk_mb (str | Unset): Time-weighted average reserved root disk (MiB) during the bucket.
     """
 
     bucket_start: str | Unset = UNSET
     reserved_cpus: str | Unset = UNSET
     reserved_memory_mb: str | Unset = UNSET
     reserved_gpus: str | Unset = UNSET
+    reserved_disk_mb: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -37,6 +39,8 @@ class UsageSeriesPoint:
         reserved_memory_mb = self.reserved_memory_mb
 
         reserved_gpus = self.reserved_gpus
+
+        reserved_disk_mb = self.reserved_disk_mb
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -49,6 +53,8 @@ class UsageSeriesPoint:
             field_dict["reservedMemoryMb"] = reserved_memory_mb
         if reserved_gpus is not UNSET:
             field_dict["reservedGpus"] = reserved_gpus
+        if reserved_disk_mb is not UNSET:
+            field_dict["reservedDiskMb"] = reserved_disk_mb
 
         return field_dict
 
@@ -63,11 +69,14 @@ class UsageSeriesPoint:
 
         reserved_gpus = d.pop("reservedGpus", UNSET)
 
+        reserved_disk_mb = d.pop("reservedDiskMb", UNSET)
+
         usage_series_point = cls(
             bucket_start=bucket_start,
             reserved_cpus=reserved_cpus,
             reserved_memory_mb=reserved_memory_mb,
             reserved_gpus=reserved_gpus,
+            reserved_disk_mb=reserved_disk_mb,
         )
 
         usage_series_point.additional_properties = d
