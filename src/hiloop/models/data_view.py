@@ -29,15 +29,12 @@ class DataView:
              current column allowlist on store and on every run, so a view referencing a dropped column fails
              closed with INVALID_ARGUMENT rather than serving a stale result.
         spec_version (str | Unset): Monotonic per-edit version; the store bumps it on each upsert.
-        is_builtin (bool | Unset): Always false: every stored view is customer-authored. Retained for wire
-            compatibility.
     """
 
     name: str | Unset = UNSET
     description: str | Unset = UNSET
     spec: DataViewSpec | Unset = UNSET
     spec_version: str | Unset = UNSET
-    is_builtin: bool | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -51,8 +48,6 @@ class DataView:
 
         spec_version = self.spec_version
 
-        is_builtin = self.is_builtin
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -64,8 +59,6 @@ class DataView:
             field_dict["spec"] = spec
         if spec_version is not UNSET:
             field_dict["specVersion"] = spec_version
-        if is_builtin is not UNSET:
-            field_dict["isBuiltin"] = is_builtin
 
         return field_dict
 
@@ -87,14 +80,11 @@ class DataView:
 
         spec_version = d.pop("specVersion", UNSET)
 
-        is_builtin = d.pop("isBuiltin", UNSET)
-
         data_view = cls(
             name=name,
             description=description,
             spec=spec,
             spec_version=spec_version,
-            is_builtin=is_builtin,
         )
 
         data_view.additional_properties = d

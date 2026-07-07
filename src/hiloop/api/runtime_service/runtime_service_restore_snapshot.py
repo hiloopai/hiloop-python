@@ -68,7 +68,11 @@ def sync_detailed(
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
 ) -> Response[RestoreSnapshotResponse]:
-    """
+    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
+     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
+     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
+     sandbox extends the source's run lineage.
+
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):
@@ -102,7 +106,11 @@ def sync(
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
 ) -> RestoreSnapshotResponse | None:
-    """
+    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
+     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
+     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
+     sandbox extends the source's run lineage.
+
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):
@@ -131,7 +139,11 @@ async def asyncio_detailed(
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
 ) -> Response[RestoreSnapshotResponse]:
-    """
+    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
+     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
+     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
+     sandbox extends the source's run lineage.
+
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):
@@ -163,7 +175,11 @@ async def asyncio(
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
 ) -> RestoreSnapshotResponse | None:
-    """
+    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
+     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
+     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
+     sandbox extends the source's run lineage.
+
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):

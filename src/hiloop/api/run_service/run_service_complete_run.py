@@ -1,24 +1,28 @@
 from http import HTTPStatus
 from typing import Any
+from urllib.parse import quote
 
 import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.start_run_request import StartRunRequest
-from ...models.start_run_response import StartRunResponse
+from ...models.complete_run_request import CompleteRunRequest
+from ...models.complete_run_response import CompleteRunResponse
 from ...types import Response
 
 
 def _get_kwargs(
+    id: str,
     *,
-    body: StartRunRequest,
+    body: CompleteRunRequest,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
 
     _kwargs: dict[str, Any] = {
         "method": "post",
-        "url": "/v1/runs",
+        "url": "/v1/runs/{id}:complete".format(
+            id=quote(str(id), safe=""),
+        ),
     }
 
     _kwargs["json"] = body.to_dict()
@@ -29,9 +33,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> StartRunResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> CompleteRunResponse | None:
     if response.status_code == 200:
-        response_200 = StartRunResponse.from_dict(response.json())
+        response_200 = CompleteRunResponse.from_dict(response.json())
 
         return response_200
 
@@ -41,7 +45,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[StartRunResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[CompleteRunResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -51,26 +55,29 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 
 
 def sync_detailed(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> Response[StartRunResponse]:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CompleteRunRequest,
+) -> Response[CompleteRunResponse]:
+    """Complete a run: record its terminal status (succeeded, failed, or canceled) and stamp its end
+     time. Only a pending or running run can be completed; completing a run that already has a
+     terminal status is a conflict.
 
     Args:
-        body (StartRunRequest):
+        id (str):
+        body (CompleteRunRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[StartRunResponse]
+        Response[CompleteRunResponse]
     """
 
     kwargs = _get_kwargs(
+        id=id,
         body=body,
     )
 
@@ -82,52 +89,58 @@ def sync_detailed(
 
 
 def sync(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> StartRunResponse | None:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CompleteRunRequest,
+) -> CompleteRunResponse | None:
+    """Complete a run: record its terminal status (succeeded, failed, or canceled) and stamp its end
+     time. Only a pending or running run can be completed; completing a run that already has a
+     terminal status is a conflict.
 
     Args:
-        body (StartRunRequest):
+        id (str):
+        body (CompleteRunRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        StartRunResponse
+        CompleteRunResponse
     """
 
     return sync_detailed(
+        id=id,
         client=client,
         body=body,
     ).parsed
 
 
 async def asyncio_detailed(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> Response[StartRunResponse]:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CompleteRunRequest,
+) -> Response[CompleteRunResponse]:
+    """Complete a run: record its terminal status (succeeded, failed, or canceled) and stamp its end
+     time. Only a pending or running run can be completed; completing a run that already has a
+     terminal status is a conflict.
 
     Args:
-        body (StartRunRequest):
+        id (str):
+        body (CompleteRunRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[StartRunResponse]
+        Response[CompleteRunResponse]
     """
 
     kwargs = _get_kwargs(
+        id=id,
         body=body,
     )
 
@@ -137,27 +150,30 @@ async def asyncio_detailed(
 
 
 async def asyncio(
+    id: str,
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> StartRunResponse | None:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CompleteRunRequest,
+) -> CompleteRunResponse | None:
+    """Complete a run: record its terminal status (succeeded, failed, or canceled) and stamp its end
+     time. Only a pending or running run can be completed; completing a run that already has a
+     terminal status is a conflict.
 
     Args:
-        body (StartRunRequest):
+        id (str):
+        body (CompleteRunRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        StartRunResponse
+        CompleteRunResponse
     """
 
     return (
         await asyncio_detailed(
+            id=id,
             client=client,
             body=body,
         )

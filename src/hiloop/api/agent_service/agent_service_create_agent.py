@@ -5,20 +5,20 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.start_run_request import StartRunRequest
-from ...models.start_run_response import StartRunResponse
+from ...models.create_agent_request import CreateAgentRequest
+from ...models.create_agent_response import CreateAgentResponse
 from ...types import Response
 
 
 def _get_kwargs(
     *,
-    body: StartRunRequest,
+    body: CreateAgentRequest,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
 
     _kwargs: dict[str, Any] = {
         "method": "post",
-        "url": "/v1/runs",
+        "url": "/v1/agents",
     }
 
     _kwargs["json"] = body.to_dict()
@@ -29,9 +29,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> StartRunResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> CreateAgentResponse | None:
     if response.status_code == 200:
-        response_200 = StartRunResponse.from_dict(response.json())
+        response_200 = CreateAgentResponse.from_dict(response.json())
 
         return response_200
 
@@ -41,7 +41,7 @@ def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Res
         return None
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[StartRunResponse]:
+def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[CreateAgentResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -53,21 +53,20 @@ def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Res
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> Response[StartRunResponse]:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CreateAgentRequest,
+) -> Response[CreateAgentResponse]:
+    """Register an agent in the caller's tenant. The name must be unique within the tenant; the new
+     agent starts with the default launch ACL (any tenant member may launch).
 
     Args:
-        body (StartRunRequest):
+        body (CreateAgentRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[StartRunResponse]
+        Response[CreateAgentResponse]
     """
 
     kwargs = _get_kwargs(
@@ -84,21 +83,20 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> StartRunResponse | None:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CreateAgentRequest,
+) -> CreateAgentResponse | None:
+    """Register an agent in the caller's tenant. The name must be unique within the tenant; the new
+     agent starts with the default launch ACL (any tenant member may launch).
 
     Args:
-        body (StartRunRequest):
+        body (CreateAgentRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        StartRunResponse
+        CreateAgentResponse
     """
 
     return sync_detailed(
@@ -110,21 +108,20 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> Response[StartRunResponse]:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CreateAgentRequest,
+) -> Response[CreateAgentResponse]:
+    """Register an agent in the caller's tenant. The name must be unique within the tenant; the new
+     agent starts with the default launch ACL (any tenant member may launch).
 
     Args:
-        body (StartRunRequest):
+        body (CreateAgentRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[StartRunResponse]
+        Response[CreateAgentResponse]
     """
 
     kwargs = _get_kwargs(
@@ -139,21 +136,20 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
-    body: StartRunRequest,
-) -> StartRunResponse | None:
-    """Start a new run: a new tree root, or a run that continues an existing tree when parent_run_id
-     is set. The run begins executing immediately (status running, started_at stamped); record its
-     outcome with CompleteRun.
+    body: CreateAgentRequest,
+) -> CreateAgentResponse | None:
+    """Register an agent in the caller's tenant. The name must be unique within the tenant; the new
+     agent starts with the default launch ACL (any tenant member may launch).
 
     Args:
-        body (StartRunRequest):
+        body (CreateAgentRequest):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        StartRunResponse
+        CreateAgentResponse
     """
 
     return (

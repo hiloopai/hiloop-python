@@ -27,9 +27,6 @@ class AnnotateRequest:
            payload_json (str | Unset): The annotation payload as a JSON object string; validated against `schema_name`'s
                registered
                 JSON Schema at ingest. Reserved `hiloop.annotation.*` keys are platform-owned and excluded.
-           lineage_path (str | Unset): The run lineage path the annotation is anchored at. Empty means the tree root. Only
-               valid with
-                `run_id`.
            project_id (str | Unset): The project a run-less annotation belongs to. Exactly one of `run_id` or `project_id`
                is set;
                 a project-scoped annotation carries no run lineage and no target event.
@@ -39,7 +36,6 @@ class AnnotateRequest:
     schema_name: str | Unset = UNSET
     target_event_id: str | Unset = UNSET
     payload_json: str | Unset = UNSET
-    lineage_path: str | Unset = UNSET
     project_id: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -51,8 +47,6 @@ class AnnotateRequest:
         target_event_id = self.target_event_id
 
         payload_json = self.payload_json
-
-        lineage_path = self.lineage_path
 
         project_id = self.project_id
 
@@ -67,8 +61,6 @@ class AnnotateRequest:
             field_dict["targetEventId"] = target_event_id
         if payload_json is not UNSET:
             field_dict["payloadJson"] = payload_json
-        if lineage_path is not UNSET:
-            field_dict["lineagePath"] = lineage_path
         if project_id is not UNSET:
             field_dict["projectId"] = project_id
 
@@ -85,8 +77,6 @@ class AnnotateRequest:
 
         payload_json = d.pop("payloadJson", UNSET)
 
-        lineage_path = d.pop("lineagePath", UNSET)
-
         project_id = d.pop("projectId", UNSET)
 
         annotate_request = cls(
@@ -94,7 +84,6 @@ class AnnotateRequest:
             schema_name=schema_name,
             target_event_id=target_event_id,
             payload_json=payload_json,
-            lineage_path=lineage_path,
             project_id=project_id,
         )
 

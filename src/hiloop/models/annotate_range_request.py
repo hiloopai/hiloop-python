@@ -13,18 +13,30 @@ T = TypeVar("T", bound="AnnotateRangeRequest")
 
 @_attrs_define
 class AnnotateRangeRequest:
-    """A range annotation spanning a wall-clock window within a run (rather than a single target event).
+    """A range annotation spanning a window within a run (rather than a single target event). The window
+    is either a pair of wall-clock nanosecond bounds or a pair of event ids whose recorded timestamps
+    become the bounds — supply exactly one form.
 
-    Attributes:
-        run_id (str | Unset): The run (session) the annotation belongs to.
-        schema_name (str | Unset): The registered annotation-schema name the payload validates against (the event
-            `name`).
-        range_start_ns (str | Unset): Inclusive start of the annotated window, in wall-clock nanoseconds.
-        range_end_ns (str | Unset): Inclusive end of the annotated window, in wall-clock nanoseconds.
-        payload_json (str | Unset): The annotation payload as a JSON object string; validated against `schema_name`'s
-            registered
-             JSON Schema at ingest. Reserved `hiloop.annotation.*` keys are platform-owned and excluded.
-        lineage_path (str | Unset): The run lineage path the annotation is anchored at. Empty means the tree root.
+       Attributes:
+           run_id (str | Unset): The run (session) the annotation belongs to.
+           schema_name (str | Unset): The registered annotation-schema name the payload validates against (the event
+               `name`).
+           range_start_ns (str | Unset): Inclusive start of the annotated window, in wall-clock nanoseconds. Mutually
+               exclusive with the
+                event-pair form.
+           range_end_ns (str | Unset): Inclusive end of the annotated window, in wall-clock nanoseconds. Mutually exclusive
+               with the
+                event-pair form.
+           payload_json (str | Unset): The annotation payload as a JSON object string; validated against `schema_name`'s
+               registered
+                JSON Schema at ingest. Reserved `hiloop.annotation.*` keys are platform-owned and excluded.
+           range_start_event_id (str | Unset): The `event_id` whose recorded timestamp starts the annotated window. Both
+               event endpoints must
+                exist in `run_id`; the window bounds are materialized from their timestamps. Set together with
+                `range_end_event_id`, and not alongside the nanosecond bounds.
+           range_end_event_id (str | Unset): The `event_id` whose recorded timestamp ends the annotated window. Set
+               together with
+                `range_start_event_id`, and not alongside the nanosecond bounds.
     """
 
     run_id: str | Unset = UNSET
@@ -32,7 +44,8 @@ class AnnotateRangeRequest:
     range_start_ns: str | Unset = UNSET
     range_end_ns: str | Unset = UNSET
     payload_json: str | Unset = UNSET
-    lineage_path: str | Unset = UNSET
+    range_start_event_id: str | Unset = UNSET
+    range_end_event_id: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -46,7 +59,9 @@ class AnnotateRangeRequest:
 
         payload_json = self.payload_json
 
-        lineage_path = self.lineage_path
+        range_start_event_id = self.range_start_event_id
+
+        range_end_event_id = self.range_end_event_id
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -61,8 +76,10 @@ class AnnotateRangeRequest:
             field_dict["rangeEndNs"] = range_end_ns
         if payload_json is not UNSET:
             field_dict["payloadJson"] = payload_json
-        if lineage_path is not UNSET:
-            field_dict["lineagePath"] = lineage_path
+        if range_start_event_id is not UNSET:
+            field_dict["rangeStartEventId"] = range_start_event_id
+        if range_end_event_id is not UNSET:
+            field_dict["rangeEndEventId"] = range_end_event_id
 
         return field_dict
 
@@ -79,7 +96,9 @@ class AnnotateRangeRequest:
 
         payload_json = d.pop("payloadJson", UNSET)
 
-        lineage_path = d.pop("lineagePath", UNSET)
+        range_start_event_id = d.pop("rangeStartEventId", UNSET)
+
+        range_end_event_id = d.pop("rangeEndEventId", UNSET)
 
         annotate_range_request = cls(
             run_id=run_id,
@@ -87,7 +106,8 @@ class AnnotateRangeRequest:
             range_start_ns=range_start_ns,
             range_end_ns=range_end_ns,
             payload_json=payload_json,
-            lineage_path=lineage_path,
+            range_start_event_id=range_start_event_id,
+            range_end_event_id=range_end_event_id,
         )
 
         annotate_range_request.additional_properties = d

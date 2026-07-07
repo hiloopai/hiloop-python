@@ -21,11 +21,21 @@ class SecretBinding:
            name (str | Unset): Name of the stored sandbox secret to resolve.
            env (str | Unset): Placeholder environment variable the agent sees in place of the value.
            bind (str | Unset): Outbound target the resolved value is injected into (e.g. a host or header).
+           gen_ai_model (str | Unset): Safe model classification to attach to brokered telemetry.
+           tool_call (str | Unset): Safe tool-call classification to attach to brokered telemetry.
+           redacted_payload_digest (str | Unset): Digest of a redacted brokered payload artifact.
+           redacted_payload_media_type (str | Unset): Media type of a redacted brokered payload artifact.
+           redacted_payload_size_bytes (str | Unset): Size of a redacted brokered payload artifact.
     """
 
     name: str | Unset = UNSET
     env: str | Unset = UNSET
     bind: str | Unset = UNSET
+    gen_ai_model: str | Unset = UNSET
+    tool_call: str | Unset = UNSET
+    redacted_payload_digest: str | Unset = UNSET
+    redacted_payload_media_type: str | Unset = UNSET
+    redacted_payload_size_bytes: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -34,6 +44,16 @@ class SecretBinding:
         env = self.env
 
         bind = self.bind
+
+        gen_ai_model = self.gen_ai_model
+
+        tool_call = self.tool_call
+
+        redacted_payload_digest = self.redacted_payload_digest
+
+        redacted_payload_media_type = self.redacted_payload_media_type
+
+        redacted_payload_size_bytes = self.redacted_payload_size_bytes
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -44,6 +64,16 @@ class SecretBinding:
             field_dict["env"] = env
         if bind is not UNSET:
             field_dict["bind"] = bind
+        if gen_ai_model is not UNSET:
+            field_dict["genAiModel"] = gen_ai_model
+        if tool_call is not UNSET:
+            field_dict["toolCall"] = tool_call
+        if redacted_payload_digest is not UNSET:
+            field_dict["redactedPayloadDigest"] = redacted_payload_digest
+        if redacted_payload_media_type is not UNSET:
+            field_dict["redactedPayloadMediaType"] = redacted_payload_media_type
+        if redacted_payload_size_bytes is not UNSET:
+            field_dict["redactedPayloadSizeBytes"] = redacted_payload_size_bytes
 
         return field_dict
 
@@ -56,10 +86,25 @@ class SecretBinding:
 
         bind = d.pop("bind", UNSET)
 
+        gen_ai_model = d.pop("genAiModel", UNSET)
+
+        tool_call = d.pop("toolCall", UNSET)
+
+        redacted_payload_digest = d.pop("redactedPayloadDigest", UNSET)
+
+        redacted_payload_media_type = d.pop("redactedPayloadMediaType", UNSET)
+
+        redacted_payload_size_bytes = d.pop("redactedPayloadSizeBytes", UNSET)
+
         secret_binding = cls(
             name=name,
             env=env,
             bind=bind,
+            gen_ai_model=gen_ai_model,
+            tool_call=tool_call,
+            redacted_payload_digest=redacted_payload_digest,
+            redacted_payload_media_type=redacted_payload_media_type,
+            redacted_payload_size_bytes=redacted_payload_size_bytes,
         )
 
         secret_binding.additional_properties = d

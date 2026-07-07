@@ -1,5 +1,8 @@
 """Contains all the data models used in inputs/outputs"""
 
+from .agent import Agent
+from .agent_launch_acl import AgentLaunchAcl
+from .agent_launch_acl_policy import AgentLaunchAclPolicy
 from .annotate_range_request import AnnotateRangeRequest
 from .annotate_request import AnnotateRequest
 from .annotate_response import AnnotateResponse
@@ -11,6 +14,7 @@ from .branch_diff_request import BranchDiffRequest
 from .branch_diff_response import BranchDiffResponse
 from .branch_diff_response_rows_item import BranchDiffResponseRowsItem
 from .branch_diff_spec import BranchDiffSpec
+from .branch_hlc import BranchHlc
 from .build_artifact_image import BuildArtifactImage
 from .capability import Capability
 from .capability_requirement import CapabilityRequirement
@@ -18,6 +22,10 @@ from .capture_spec import CaptureSpec
 from .capture_spec_policy import CaptureSpecPolicy
 from .command_spec import CommandSpec
 from .command_spec_env import CommandSpecEnv
+from .complete_run_request import CompleteRunRequest
+from .complete_run_response import CompleteRunResponse
+from .create_agent_request import CreateAgentRequest
+from .create_agent_response import CreateAgentResponse
 from .create_project_request import CreateProjectRequest
 from .create_project_response import CreateProjectResponse
 from .create_sandbox_request import CreateSandboxRequest
@@ -39,6 +47,7 @@ from .egress_policy_mode import EgressPolicyMode
 from .execute_sandbox_request import ExecuteSandboxRequest
 from .execute_sandbox_response import ExecuteSandboxResponse
 from .execution import Execution
+from .execution_error import ExecutionError
 from .file_from_artifact_request import FileFromArtifactRequest
 from .file_from_artifact_response import FileFromArtifactResponse
 from .file_to_artifact_request import FileToArtifactRequest
@@ -49,6 +58,7 @@ from .fork_run_response import ForkRunResponse
 from .fork_sandbox_request import ForkSandboxRequest
 from .fork_sandbox_request_labels import ForkSandboxRequestLabels
 from .fork_sandbox_response import ForkSandboxResponse
+from .get_agent_response import GetAgentResponse
 from .get_annotation_schema_response import GetAnnotationSchemaResponse
 from .get_artifact_response import GetArtifactResponse
 from .get_execution_response import GetExecutionResponse
@@ -67,7 +77,10 @@ from .kill_execution_request import KillExecutionRequest
 from .kill_execution_request_signal import KillExecutionRequestSignal
 from .kill_execution_response import KillExecutionResponse
 from .lifecycle_spec import LifecycleSpec
+from .list_agents_response import ListAgentsResponse
 from .list_annotation_schemas_response import ListAnnotationSchemasResponse
+from .list_annotations_response import ListAnnotationsResponse
+from .list_annotations_response_annotations_item import ListAnnotationsResponseAnnotationsItem
 from .list_data_views_response import ListDataViewsResponse
 from .list_projects_response import ListProjectsResponse
 from .list_runs_response import ListRunsResponse
@@ -96,6 +109,8 @@ from .resource_spec_architecture import ResourceSpecArchitecture
 from .restore_snapshot_request import RestoreSnapshotRequest
 from .restore_snapshot_request_labels import RestoreSnapshotRequestLabels
 from .restore_snapshot_response import RestoreSnapshotResponse
+from .resume_sandbox_request import ResumeSandboxRequest
+from .resume_sandbox_response import ResumeSandboxResponse
 from .revoke_sandbox_secret_response import RevokeSandboxSecretResponse
 from .rotate_sandbox_secret_request import RotateSandboxSecretRequest
 from .rotate_sandbox_secret_response import RotateSandboxSecretResponse
@@ -111,6 +126,8 @@ from .secret_binding import SecretBinding
 from .send_execution_input_request import SendExecutionInputRequest
 from .send_execution_input_request_signal import SendExecutionInputRequestSignal
 from .send_execution_input_response import SendExecutionInputResponse
+from .set_agent_launch_acl_request import SetAgentLaunchAclRequest
+from .set_agent_launch_acl_response import SetAgentLaunchAclResponse
 from .set_tenant_egress_policy_request import SetTenantEgressPolicyRequest
 from .set_tenant_egress_policy_request_enforcement import SetTenantEgressPolicyRequestEnforcement
 from .set_tenant_egress_policy_response import SetTenantEgressPolicyResponse
@@ -131,6 +148,9 @@ from .usage_snapshot import UsageSnapshot
 from .who_am_i_response import WhoAmIResponse
 
 __all__ = (
+    "Agent",
+    "AgentLaunchAcl",
+    "AgentLaunchAclPolicy",
     "AnnotateRangeRequest",
     "AnnotateRequest",
     "AnnotateResponse",
@@ -142,6 +162,7 @@ __all__ = (
     "BranchDiffResponse",
     "BranchDiffResponseRowsItem",
     "BranchDiffSpec",
+    "BranchHlc",
     "BuildArtifactImage",
     "Capability",
     "CapabilityRequirement",
@@ -149,6 +170,10 @@ __all__ = (
     "CaptureSpecPolicy",
     "CommandSpec",
     "CommandSpecEnv",
+    "CompleteRunRequest",
+    "CompleteRunResponse",
+    "CreateAgentRequest",
+    "CreateAgentResponse",
     "CreateProjectRequest",
     "CreateProjectResponse",
     "CreateSandboxRequest",
@@ -170,6 +195,7 @@ __all__ = (
     "ExecuteSandboxRequest",
     "ExecuteSandboxResponse",
     "Execution",
+    "ExecutionError",
     "FileFromArtifactRequest",
     "FileFromArtifactResponse",
     "FileToArtifactRequest",
@@ -180,6 +206,7 @@ __all__ = (
     "ForkSandboxRequest",
     "ForkSandboxRequestLabels",
     "ForkSandboxResponse",
+    "GetAgentResponse",
     "GetAnnotationSchemaResponse",
     "GetArtifactResponse",
     "GetExecutionResponse",
@@ -198,7 +225,10 @@ __all__ = (
     "KillExecutionRequestSignal",
     "KillExecutionResponse",
     "LifecycleSpec",
+    "ListAgentsResponse",
     "ListAnnotationSchemasResponse",
+    "ListAnnotationsResponse",
+    "ListAnnotationsResponseAnnotationsItem",
     "ListDataViewsResponse",
     "ListProjectsResponse",
     "ListRunsResponse",
@@ -227,6 +257,8 @@ __all__ = (
     "RestoreSnapshotRequest",
     "RestoreSnapshotRequestLabels",
     "RestoreSnapshotResponse",
+    "ResumeSandboxRequest",
+    "ResumeSandboxResponse",
     "RevokeSandboxSecretResponse",
     "RotateSandboxSecretRequest",
     "RotateSandboxSecretResponse",
@@ -242,6 +274,8 @@ __all__ = (
     "SendExecutionInputRequest",
     "SendExecutionInputRequestSignal",
     "SendExecutionInputResponse",
+    "SetAgentLaunchAclRequest",
+    "SetAgentLaunchAclResponse",
     "SetTenantEgressPolicyRequest",
     "SetTenantEgressPolicyRequestEnforcement",
     "SetTenantEgressPolicyResponse",

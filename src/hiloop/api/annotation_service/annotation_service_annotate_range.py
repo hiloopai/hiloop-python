@@ -59,8 +59,11 @@ def sync_detailed(
      its payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRangeRequest): A range annotation spanning a wall-clock window within a run
-            (rather than a single target event).
+        body (AnnotateRangeRequest): A range annotation spanning a window within a run (rather
+            than a single target event). The window
+             is either a pair of wall-clock nanosecond bounds or a pair of event ids whose recorded
+            timestamps
+             become the bounds — supply exactly one form.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -90,8 +93,11 @@ def sync(
      its payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRangeRequest): A range annotation spanning a wall-clock window within a run
-            (rather than a single target event).
+        body (AnnotateRangeRequest): A range annotation spanning a window within a run (rather
+            than a single target event). The window
+             is either a pair of wall-clock nanosecond bounds or a pair of event ids whose recorded
+            timestamps
+             become the bounds — supply exactly one form.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -116,8 +122,11 @@ async def asyncio_detailed(
      its payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRangeRequest): A range annotation spanning a wall-clock window within a run
-            (rather than a single target event).
+        body (AnnotateRangeRequest): A range annotation spanning a window within a run (rather
+            than a single target event). The window
+             is either a pair of wall-clock nanosecond bounds or a pair of event ids whose recorded
+            timestamps
+             become the bounds — supply exactly one form.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,8 +154,11 @@ async def asyncio(
      its payload against the named schema, and durably appends it; returns the minted `event_id`.
 
     Args:
-        body (AnnotateRangeRequest): A range annotation spanning a wall-clock window within a run
-            (rather than a single target event).
+        body (AnnotateRangeRequest): A range annotation spanning a window within a run (rather
+            than a single target event). The window
+             is either a pair of wall-clock nanosecond bounds or a pair of event ids whose recorded
+            timestamps
+             become the bounds — supply exactly one form.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

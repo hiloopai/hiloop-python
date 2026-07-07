@@ -28,7 +28,10 @@ class ForkSandboxRequest:
     Attributes:
         source_sandbox_id (str | Unset):
         project_id (str | Unset):
-        name (str | Unset):
+        name (str | Unset): An optional display name for the child sandbox. When empty the server names it: a labeled
+            fork
+             of a named source gets `<source-name>-<label>`, anything else gets a generated name. Names are
+             not unique; the child id in the response is the canonical handle.
         image (SandboxImage | Unset):
         resources (ResourceSpec | Unset):
         requested_capabilities (list[CapabilityRequirement] | Unset):
@@ -52,10 +55,11 @@ class ForkSandboxRequest:
         branch_hlc_logical (str | Unset): The parent branch-point logical tiebreak that pairs with branch_hlc_wall_ns.
         label (str | Unset): An optional human-readable label for the child run the fork mints. When empty, the server
              assigns a friendly fallback name.
-        lifecycle (LifecycleSpec | Unset): Runtime lease policy. Omitted, or lease_secs=0, uses the server default. This
-            intentionally exposes
-             only the expiry control needed by public callers; process defaults, mounts, environment, and user
-             remain server-managed in the first runtime slice.
+        lifecycle (LifecycleSpec | Unset): Sandbox lifecycle policy: two independent clocks, matching how the completion
+            sweep and the
+             lifetime reaper enforce them. This intentionally exposes only the two expiry controls needed by
+             public callers; process defaults, mounts, environment, and user remain server-managed in the first
+             runtime slice.
     """
 
     source_sandbox_id: str | Unset = UNSET

@@ -9,67 +9,40 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
-    from ..models.execution import Execution
     from ..models.operation import Operation
-    from ..models.sandbox import Sandbox
 
 
-T = TypeVar("T", bound="CreateSandboxResponse")
+T = TypeVar("T", bound="ResumeSandboxResponse")
 
 
 @_attrs_define
-class CreateSandboxResponse:
+class ResumeSandboxResponse:
     """
     Attributes:
-        sandbox (Sandbox | Unset):
         operation (Operation | Unset):
-        execution (Execution | Unset):
     """
 
-    sandbox: Sandbox | Unset = UNSET
     operation: Operation | Unset = UNSET
-    execution: Execution | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        sandbox: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.sandbox, Unset):
-            sandbox = self.sandbox.to_dict()
-
         operation: dict[str, Any] | Unset = UNSET
         if not isinstance(self.operation, Unset):
             operation = self.operation.to_dict()
 
-        execution: dict[str, Any] | Unset = UNSET
-        if not isinstance(self.execution, Unset):
-            execution = self.execution.to_dict()
-
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
-        if sandbox is not UNSET:
-            field_dict["sandbox"] = sandbox
         if operation is not UNSET:
             field_dict["operation"] = operation
-        if execution is not UNSET:
-            field_dict["execution"] = execution
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
-        from ..models.execution import Execution
         from ..models.operation import Operation
-        from ..models.sandbox import Sandbox
 
         d = dict(src_dict)
-        _sandbox = d.pop("sandbox", UNSET)
-        sandbox: Sandbox | Unset
-        if isinstance(_sandbox, Unset):
-            sandbox = UNSET
-        else:
-            sandbox = Sandbox.from_dict(_sandbox)
-
         _operation = d.pop("operation", UNSET)
         operation: Operation | Unset
         if isinstance(_operation, Unset):
@@ -77,21 +50,12 @@ class CreateSandboxResponse:
         else:
             operation = Operation.from_dict(_operation)
 
-        _execution = d.pop("execution", UNSET)
-        execution: Execution | Unset
-        if isinstance(_execution, Unset):
-            execution = UNSET
-        else:
-            execution = Execution.from_dict(_execution)
-
-        create_sandbox_response = cls(
-            sandbox=sandbox,
+        resume_sandbox_response = cls(
             operation=operation,
-            execution=execution,
         )
 
-        create_sandbox_response.additional_properties = d
-        return create_sandbox_response
+        resume_sandbox_response.additional_properties = d
+        return resume_sandbox_response
 
     @property
     def additional_keys(self) -> list[str]:

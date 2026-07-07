@@ -6,17 +6,29 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.list_snapshots_response import ListSnapshotsResponse
-from ...types import UNSET, Response
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     *,
     project_id: str,
+    sandbox_id: str | Unset = UNSET,
+    run_id: str | Unset = UNSET,
+    origin: str | Unset = UNSET,
+    state: str | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
 
     params["projectId"] = project_id
+
+    params["sandboxId"] = sandbox_id
+
+    params["runId"] = run_id
+
+    params["origin"] = origin
+
+    params["state"] = state
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -56,10 +68,18 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     project_id: str,
+    sandbox_id: str | Unset = UNSET,
+    run_id: str | Unset = UNSET,
+    origin: str | Unset = UNSET,
+    state: str | Unset = UNSET,
 ) -> Response[ListSnapshotsResponse]:
     """
     Args:
         project_id (str):
+        sandbox_id (str | Unset):
+        run_id (str | Unset):
+        origin (str | Unset):
+        state (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -71,6 +91,10 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         project_id=project_id,
+        sandbox_id=sandbox_id,
+        run_id=run_id,
+        origin=origin,
+        state=state,
     )
 
     response = client.get_httpx_client().request(
@@ -84,10 +108,18 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     project_id: str,
+    sandbox_id: str | Unset = UNSET,
+    run_id: str | Unset = UNSET,
+    origin: str | Unset = UNSET,
+    state: str | Unset = UNSET,
 ) -> ListSnapshotsResponse | None:
     """
     Args:
         project_id (str):
+        sandbox_id (str | Unset):
+        run_id (str | Unset):
+        origin (str | Unset):
+        state (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -100,6 +132,10 @@ def sync(
     return sync_detailed(
         client=client,
         project_id=project_id,
+        sandbox_id=sandbox_id,
+        run_id=run_id,
+        origin=origin,
+        state=state,
     ).parsed
 
 
@@ -107,10 +143,18 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     project_id: str,
+    sandbox_id: str | Unset = UNSET,
+    run_id: str | Unset = UNSET,
+    origin: str | Unset = UNSET,
+    state: str | Unset = UNSET,
 ) -> Response[ListSnapshotsResponse]:
     """
     Args:
         project_id (str):
+        sandbox_id (str | Unset):
+        run_id (str | Unset):
+        origin (str | Unset):
+        state (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -122,6 +166,10 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         project_id=project_id,
+        sandbox_id=sandbox_id,
+        run_id=run_id,
+        origin=origin,
+        state=state,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -133,10 +181,18 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     project_id: str,
+    sandbox_id: str | Unset = UNSET,
+    run_id: str | Unset = UNSET,
+    origin: str | Unset = UNSET,
+    state: str | Unset = UNSET,
 ) -> ListSnapshotsResponse | None:
     """
     Args:
         project_id (str):
+        sandbox_id (str | Unset):
+        run_id (str | Unset):
+        origin (str | Unset):
+        state (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -150,5 +206,9 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             project_id=project_id,
+            sandbox_id=sandbox_id,
+            run_id=run_id,
+            origin=origin,
+            state=state,
         )
     ).parsed

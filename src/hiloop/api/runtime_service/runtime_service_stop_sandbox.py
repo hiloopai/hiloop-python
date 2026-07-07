@@ -60,10 +60,12 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
 ) -> Response[StopSandboxResponse]:
-    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
-     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
-     which tears the sandbox down entirely. Work that completed before the stop is reported as
-     succeeded rather than interrupted.
+    """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
+     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
+     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
+     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
+     terminated and the stop is final. Work that completed before the stop is reported as succeeded
+     rather than interrupted.
 
     Args:
         id (str):
@@ -95,10 +97,12 @@ def sync(
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
 ) -> StopSandboxResponse | None:
-    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
-     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
-     which tears the sandbox down entirely. Work that completed before the stop is reported as
-     succeeded rather than interrupted.
+    """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
+     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
+     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
+     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
+     terminated and the stop is final. Work that completed before the stop is reported as succeeded
+     rather than interrupted.
 
     Args:
         id (str):
@@ -125,10 +129,12 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
 ) -> Response[StopSandboxResponse]:
-    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
-     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
-     which tears the sandbox down entirely. Work that completed before the stop is reported as
-     succeeded rather than interrupted.
+    """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
+     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
+     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
+     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
+     terminated and the stop is final. Work that completed before the stop is reported as succeeded
+     rather than interrupted.
 
     Args:
         id (str):
@@ -158,10 +164,12 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
 ) -> StopSandboxResponse | None:
-    """Gracefully stop a running sandbox. The workload is terminated and the sandbox comes to rest in a
-     stopped state, but its record is retained so it stays inspectable — distinct from DeleteSandbox,
-     which tears the sandbox down entirely. Work that completed before the stop is reported as
-     succeeded rather than interrupted.
+    """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
+     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
+     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
+     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
+     terminated and the stop is final. Work that completed before the stop is reported as succeeded
+     rather than interrupted.
 
     Args:
         id (str):

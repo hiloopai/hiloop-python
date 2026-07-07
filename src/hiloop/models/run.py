@@ -44,6 +44,9 @@ class Run:
            branch_hlc_logical (str | Unset): The parent branch-point logical tiebreak that pairs with branch_hlc_wall_ns.
                Zero when there is
                 no branch point.
+           sandbox_id (str | Unset): The sandbox executing (or last to execute) this run, when the run is sandbox-backed.
+               Empty for
+                a run with no sandbox (e.g. a local wrapped run).
     """
 
     id: str | Unset = UNSET
@@ -61,6 +64,7 @@ class Run:
     branch_event_id: str | Unset = UNSET
     branch_hlc_wall_ns: str | Unset = UNSET
     branch_hlc_logical: str | Unset = UNSET
+    sandbox_id: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -93,6 +97,8 @@ class Run:
         branch_hlc_wall_ns = self.branch_hlc_wall_ns
 
         branch_hlc_logical = self.branch_hlc_logical
+
+        sandbox_id = self.sandbox_id
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -127,6 +133,8 @@ class Run:
             field_dict["branchHlcWallNs"] = branch_hlc_wall_ns
         if branch_hlc_logical is not UNSET:
             field_dict["branchHlcLogical"] = branch_hlc_logical
+        if sandbox_id is not UNSET:
+            field_dict["sandboxId"] = sandbox_id
 
         return field_dict
 
@@ -163,6 +171,8 @@ class Run:
 
         branch_hlc_logical = d.pop("branchHlcLogical", UNSET)
 
+        sandbox_id = d.pop("sandboxId", UNSET)
+
         run = cls(
             id=id,
             tenant_id=tenant_id,
@@ -179,6 +189,7 @@ class Run:
             branch_event_id=branch_event_id,
             branch_hlc_wall_ns=branch_hlc_wall_ns,
             branch_hlc_logical=branch_hlc_logical,
+            sandbox_id=sandbox_id,
         )
 
         run.additional_properties = d

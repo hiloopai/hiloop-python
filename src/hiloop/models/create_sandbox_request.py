@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
     from ..models.capability_requirement import CapabilityRequirement
     from ..models.capture_spec import CaptureSpec
+    from ..models.command_spec import CommandSpec
     from ..models.create_sandbox_request_labels import CreateSandboxRequestLabels
     from ..models.egress_policy import EgressPolicy
     from ..models.lifecycle_spec import LifecycleSpec
@@ -27,7 +28,8 @@ class CreateSandboxRequest:
     """
     Attributes:
         project_id (str | Unset):
-        name (str | Unset):
+        name (str | Unset): An optional display name for the sandbox. When empty the server generates one. Names are not
+             unique; the id returned in the response is the canonical handle.
         image (SandboxImage | Unset):
         resources (ResourceSpec | Unset):
         requested_capabilities (list[CapabilityRequirement] | Unset):
@@ -39,11 +41,16 @@ class CreateSandboxRequest:
              runtime supports.
         secrets (list[SecretBinding] | Unset): Secret bindings injected into matching outbound requests. Empty injects
             nothing.
-        lifecycle (LifecycleSpec | Unset): Runtime lease policy. Omitted, or lease_secs=0, uses the server default. This
-            intentionally exposes
-             only the expiry control needed by public callers; process defaults, mounts, environment, and user
-             remain server-managed in the first runtime slice.
+        lifecycle (LifecycleSpec | Unset): Sandbox lifecycle policy: two independent clocks, matching how the completion
+            sweep and the
+             lifetime reaper enforce them. This intentionally exposes only the two expiry controls needed by
+             public callers; process defaults, mounts, environment, and user remain server-managed in the first
+             runtime slice.
         description (str | Unset): User-assigned free-text description. Empty leaves the sandbox undescribed.
+        command (CommandSpec | Unset):
+        delete_on_exit (bool | Unset): One-shot mode only: delete the sandbox on command exit instead of stopping it.
+            The run and its
+             captured events persist either way.
     """
 
     project_id: str | Unset = UNSET
@@ -57,6 +64,8 @@ class CreateSandboxRequest:
     secrets: list[SecretBinding] | Unset = UNSET
     lifecycle: LifecycleSpec | Unset = UNSET
     description: str | Unset = UNSET
+    command: CommandSpec | Unset = UNSET
+    delete_on_exit: bool | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -104,6 +113,12 @@ class CreateSandboxRequest:
 
         description = self.description
 
+        command: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.command, Unset):
+            command = self.command.to_dict()
+
+        delete_on_exit = self.delete_on_exit
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -129,6 +144,10 @@ class CreateSandboxRequest:
             field_dict["lifecycle"] = lifecycle
         if description is not UNSET:
             field_dict["description"] = description
+        if command is not UNSET:
+            field_dict["command"] = command
+        if delete_on_exit is not UNSET:
+            field_dict["deleteOnExit"] = delete_on_exit
 
         return field_dict
 
@@ -136,6 +155,7 @@ class CreateSandboxRequest:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.capability_requirement import CapabilityRequirement
         from ..models.capture_spec import CaptureSpec
+        from ..models.command_spec import CommandSpec
         from ..models.create_sandbox_request_labels import CreateSandboxRequestLabels
         from ..models.egress_policy import EgressPolicy
         from ..models.lifecycle_spec import LifecycleSpec
@@ -210,6 +230,15 @@ class CreateSandboxRequest:
 
         description = d.pop("description", UNSET)
 
+        _command = d.pop("command", UNSET)
+        command: CommandSpec | Unset
+        if isinstance(_command, Unset):
+            command = UNSET
+        else:
+            command = CommandSpec.from_dict(_command)
+
+        delete_on_exit = d.pop("deleteOnExit", UNSET)
+
         create_sandbox_request = cls(
             project_id=project_id,
             name=name,
@@ -222,6 +251,8 @@ class CreateSandboxRequest:
             secrets=secrets,
             lifecycle=lifecycle,
             description=description,
+            command=command,
+            delete_on_exit=delete_on_exit,
         )
 
         create_sandbox_request.additional_properties = d

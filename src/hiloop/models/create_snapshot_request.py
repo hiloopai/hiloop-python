@@ -25,6 +25,9 @@ class CreateSnapshotRequest:
             time and verified after
              every restore of this snapshot. Callers should quiesce writes to this path before requesting the
              snapshot.
+        name (str | Unset): Optional user-assigned snapshot name. Names are not enforced unique; where a name is unique
+             within its project, the snapshot is addressable by it wherever a snapshot id is accepted.
+        description (str | Unset): Optional user-assigned free-text description.
     """
 
     sandbox_id: str | Unset = UNSET
@@ -34,6 +37,8 @@ class CreateSnapshotRequest:
     ttl_secs: str | Unset = UNSET
     legal_hold: bool | Unset = UNSET
     verification_probe_path: str | Unset = UNSET
+    name: str | Unset = UNSET
+    description: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -50,6 +55,10 @@ class CreateSnapshotRequest:
         legal_hold = self.legal_hold
 
         verification_probe_path = self.verification_probe_path
+
+        name = self.name
+
+        description = self.description
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -68,6 +77,10 @@ class CreateSnapshotRequest:
             field_dict["legalHold"] = legal_hold
         if verification_probe_path is not UNSET:
             field_dict["verificationProbePath"] = verification_probe_path
+        if name is not UNSET:
+            field_dict["name"] = name
+        if description is not UNSET:
+            field_dict["description"] = description
 
         return field_dict
 
@@ -88,6 +101,10 @@ class CreateSnapshotRequest:
 
         verification_probe_path = d.pop("verificationProbePath", UNSET)
 
+        name = d.pop("name", UNSET)
+
+        description = d.pop("description", UNSET)
+
         create_snapshot_request = cls(
             sandbox_id=sandbox_id,
             contents=contents,
@@ -96,6 +113,8 @@ class CreateSnapshotRequest:
             ttl_secs=ttl_secs,
             legal_hold=legal_hold,
             verification_probe_path=verification_probe_path,
+            name=name,
+            description=description,
         )
 
         create_snapshot_request.additional_properties = d
