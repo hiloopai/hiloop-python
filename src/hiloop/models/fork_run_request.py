@@ -48,13 +48,13 @@ class ForkRunRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if parent_run_id is not UNSET:
-            field_dict["parentRunId"] = parent_run_id
+            field_dict["parent_run_id"] = parent_run_id
         if branch_event_id is not UNSET:
-            field_dict["branchEventId"] = branch_event_id
+            field_dict["branch_event_id"] = branch_event_id
         if branch_hlc_wall_ns is not UNSET:
-            field_dict["branchHlcWallNs"] = branch_hlc_wall_ns
+            field_dict["branch_hlc_wall_ns"] = branch_hlc_wall_ns
         if branch_hlc_logical is not UNSET:
-            field_dict["branchHlcLogical"] = branch_hlc_logical
+            field_dict["branch_hlc_logical"] = branch_hlc_logical
         if label is not UNSET:
             field_dict["label"] = label
 
@@ -63,13 +63,13 @@ class ForkRunRequest:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        parent_run_id = d.pop("parentRunId", UNSET)
+        parent_run_id = d.pop("parent_run_id", UNSET)
 
-        branch_event_id = d.pop("branchEventId", UNSET)
+        branch_event_id = d.pop("branch_event_id", UNSET)
 
-        branch_hlc_wall_ns = d.pop("branchHlcWallNs", UNSET)
+        branch_hlc_wall_ns = d.pop("branch_hlc_wall_ns", UNSET)
 
-        branch_hlc_logical = d.pop("branchHlcLogical", UNSET)
+        branch_hlc_logical = d.pop("branch_hlc_logical", UNSET)
 
         label = d.pop("label", UNSET)
 

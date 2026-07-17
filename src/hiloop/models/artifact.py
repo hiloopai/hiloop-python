@@ -22,6 +22,7 @@ class Artifact:
         size_bytes (str | Unset):
         digest_algorithm (str | Unset):
         digest (str | Unset):
+        created_at (str | Unset): When the artifact was created (RFC 3339).
     """
 
     id: str | Unset = UNSET
@@ -31,6 +32,7 @@ class Artifact:
     size_bytes: str | Unset = UNSET
     digest_algorithm: str | Unset = UNSET
     digest: str | Unset = UNSET
+    created_at: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -48,23 +50,27 @@ class Artifact:
 
         digest = self.digest
 
+        created_at = self.created_at
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if id is not UNSET:
             field_dict["id"] = id
         if tenant_id is not UNSET:
-            field_dict["tenantId"] = tenant_id
+            field_dict["tenant_id"] = tenant_id
         if kind is not UNSET:
             field_dict["kind"] = kind
         if media_type is not UNSET:
-            field_dict["mediaType"] = media_type
+            field_dict["media_type"] = media_type
         if size_bytes is not UNSET:
-            field_dict["sizeBytes"] = size_bytes
+            field_dict["size_bytes"] = size_bytes
         if digest_algorithm is not UNSET:
-            field_dict["digestAlgorithm"] = digest_algorithm
+            field_dict["digest_algorithm"] = digest_algorithm
         if digest is not UNSET:
             field_dict["digest"] = digest
+        if created_at is not UNSET:
+            field_dict["created_at"] = created_at
 
         return field_dict
 
@@ -73,17 +79,19 @@ class Artifact:
         d = dict(src_dict)
         id = d.pop("id", UNSET)
 
-        tenant_id = d.pop("tenantId", UNSET)
+        tenant_id = d.pop("tenant_id", UNSET)
 
         kind = d.pop("kind", UNSET)
 
-        media_type = d.pop("mediaType", UNSET)
+        media_type = d.pop("media_type", UNSET)
 
-        size_bytes = d.pop("sizeBytes", UNSET)
+        size_bytes = d.pop("size_bytes", UNSET)
 
-        digest_algorithm = d.pop("digestAlgorithm", UNSET)
+        digest_algorithm = d.pop("digest_algorithm", UNSET)
 
         digest = d.pop("digest", UNSET)
+
+        created_at = d.pop("created_at", UNSET)
 
         artifact = cls(
             id=id,
@@ -93,6 +101,7 @@ class Artifact:
             size_bytes=size_bytes,
             digest_algorithm=digest_algorithm,
             digest=digest,
+            created_at=created_at,
         )
 
         artifact.additional_properties = d

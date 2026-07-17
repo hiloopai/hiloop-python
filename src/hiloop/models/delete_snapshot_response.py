@@ -20,7 +20,9 @@ T = TypeVar("T", bound="DeleteSnapshotResponse")
 class DeleteSnapshotResponse:
     """
     Attributes:
-        snapshot (Snapshot | Unset):
+        snapshot (Snapshot | Unset): Retained wire type for retired snapshot compatibility RPCs. Use a BranchFS
+            workspace revision
+             plus stop/resume for filesystem continuity on clean sandbox-cell deployments.
         operation (Operation | Unset):
     """
 

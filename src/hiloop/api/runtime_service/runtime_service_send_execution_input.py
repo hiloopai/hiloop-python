@@ -4,19 +4,22 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.send_execution_input_request import SendExecutionInputRequest
 from ...models.send_execution_input_response import SendExecutionInputResponse
-from ...types import Response
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     execution_id: str,
     *,
     body: SendExecutionInputRequest,
+    idempotency_key: str | Unset = UNSET,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
+    if not isinstance(idempotency_key, Unset):
+        headers["idempotency-key"] = idempotency_key
 
     _kwargs: dict[str, Any] = {
         "method": "post",
@@ -35,21 +38,39 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> SendExecutionInputResponse | None:
+) -> ErrorBody | SendExecutionInputResponse | None:
     if response.status_code == 200:
         response_200 = SendExecutionInputResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[SendExecutionInputResponse]:
+) -> Response[ErrorBody | SendExecutionInputResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,25 +84,30 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: SendExecutionInputRequest,
-) -> Response[SendExecutionInputResponse]:
-    """Send standard input or a control signal to a running execution.
+    idempotency_key: str | Unset = UNSET,
+) -> Response[ErrorBody | SendExecutionInputResponse]:
+    """Retired provider-interactive compatibility RPC. Clean sandbox-cell deployments return
+     unsupported; input to an attached terminal travels inside its managed SSH session.
 
     Args:
         execution_id (str):
-        body (SendExecutionInputRequest): Deliver more input to a running execution: either
-            standard input bytes or a control signal.
+        idempotency_key (str | Unset):
+        body (SendExecutionInputRequest): Retired provider-interactive compatibility request.
+            Clean sandbox-cell deployments return
+             unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[SendExecutionInputResponse]
+        Response[ErrorBody | SendExecutionInputResponse]
     """
 
     kwargs = _get_kwargs(
         execution_id=execution_id,
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = client.get_httpx_client().request(
@@ -96,26 +122,31 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: SendExecutionInputRequest,
-) -> SendExecutionInputResponse | None:
-    """Send standard input or a control signal to a running execution.
+    idempotency_key: str | Unset = UNSET,
+) -> ErrorBody | SendExecutionInputResponse | None:
+    """Retired provider-interactive compatibility RPC. Clean sandbox-cell deployments return
+     unsupported; input to an attached terminal travels inside its managed SSH session.
 
     Args:
         execution_id (str):
-        body (SendExecutionInputRequest): Deliver more input to a running execution: either
-            standard input bytes or a control signal.
+        idempotency_key (str | Unset):
+        body (SendExecutionInputRequest): Retired provider-interactive compatibility request.
+            Clean sandbox-cell deployments return
+             unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        SendExecutionInputResponse
+        ErrorBody | SendExecutionInputResponse
     """
 
     return sync_detailed(
         execution_id=execution_id,
         client=client,
         body=body,
+        idempotency_key=idempotency_key,
     ).parsed
 
 
@@ -124,25 +155,30 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: SendExecutionInputRequest,
-) -> Response[SendExecutionInputResponse]:
-    """Send standard input or a control signal to a running execution.
+    idempotency_key: str | Unset = UNSET,
+) -> Response[ErrorBody | SendExecutionInputResponse]:
+    """Retired provider-interactive compatibility RPC. Clean sandbox-cell deployments return
+     unsupported; input to an attached terminal travels inside its managed SSH session.
 
     Args:
         execution_id (str):
-        body (SendExecutionInputRequest): Deliver more input to a running execution: either
-            standard input bytes or a control signal.
+        idempotency_key (str | Unset):
+        body (SendExecutionInputRequest): Retired provider-interactive compatibility request.
+            Clean sandbox-cell deployments return
+             unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[SendExecutionInputResponse]
+        Response[ErrorBody | SendExecutionInputResponse]
     """
 
     kwargs = _get_kwargs(
         execution_id=execution_id,
         body=body,
+        idempotency_key=idempotency_key,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -155,20 +191,24 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: SendExecutionInputRequest,
-) -> SendExecutionInputResponse | None:
-    """Send standard input or a control signal to a running execution.
+    idempotency_key: str | Unset = UNSET,
+) -> ErrorBody | SendExecutionInputResponse | None:
+    """Retired provider-interactive compatibility RPC. Clean sandbox-cell deployments return
+     unsupported; input to an attached terminal travels inside its managed SSH session.
 
     Args:
         execution_id (str):
-        body (SendExecutionInputRequest): Deliver more input to a running execution: either
-            standard input bytes or a control signal.
+        idempotency_key (str | Unset):
+        body (SendExecutionInputRequest): Retired provider-interactive compatibility request.
+            Clean sandbox-cell deployments return
+             unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        SendExecutionInputResponse
+        ErrorBody | SendExecutionInputResponse
     """
 
     return (
@@ -176,5 +216,6 @@ async def asyncio(
             execution_id=execution_id,
             client=client,
             body=body,
+            idempotency_key=idempotency_key,
         )
     ).parsed

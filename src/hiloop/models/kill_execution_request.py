@@ -14,11 +14,12 @@ T = TypeVar("T", bound="KillExecutionRequest")
 
 @_attrs_define
 class KillExecutionRequest:
-    """Signal a running execution.
+    """Retired provider-interactive compatibility request. Clean sandbox-cell deployments return
+    unsupported.
 
-    Attributes:
-        execution_id (str | Unset):
-        signal (KillExecutionRequestSignal | Unset): Signal to deliver. TERMINATE is used when unspecified.
+       Attributes:
+           execution_id (str | Unset):
+           signal (KillExecutionRequestSignal | Unset): Signal to deliver. TERMINATE is used when unspecified.
     """
 
     execution_id: str | Unset = UNSET
@@ -36,7 +37,7 @@ class KillExecutionRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if execution_id is not UNSET:
-            field_dict["executionId"] = execution_id
+            field_dict["execution_id"] = execution_id
         if signal is not UNSET:
             field_dict["signal"] = signal
 
@@ -45,7 +46,7 @@ class KillExecutionRequest:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        execution_id = d.pop("executionId", UNSET)
+        execution_id = d.pop("execution_id", UNSET)
 
         _signal = d.pop("signal", UNSET)
         signal: KillExecutionRequestSignal | Unset

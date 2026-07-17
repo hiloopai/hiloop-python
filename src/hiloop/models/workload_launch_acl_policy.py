@@ -1,0 +1,10 @@
+from enum import Enum
+
+
+class WorkloadLaunchAclPolicy(str, Enum):
+    WORKLOAD_LAUNCH_POLICY_MEMBERS = "WORKLOAD_LAUNCH_POLICY_MEMBERS"
+    WORKLOAD_LAUNCH_POLICY_RESTRICTED = "WORKLOAD_LAUNCH_POLICY_RESTRICTED"
+    WORKLOAD_LAUNCH_POLICY_UNSPECIFIED = "WORKLOAD_LAUNCH_POLICY_UNSPECIFIED"
+
+    def __str__(self) -> str:
+        return str(self.value)

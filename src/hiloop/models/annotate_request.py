@@ -30,6 +30,12 @@ class AnnotateRequest:
            project_id (str | Unset): The project a run-less annotation belongs to. Exactly one of `run_id` or `project_id`
                is set;
                 a project-scoped annotation carries no run lineage and no target event.
+           event_id (str | Unset): Optional caller-minted `event_id` for the annotation event (a 26-character ULID).
+               Supplying one
+                makes retries safe: re-sending the request with the same `event_id` returns the existing
+                annotation instead of writing a duplicate, so an ambiguous failure (a 5xx or a lost response)
+                can be retried blindly. The id names this logical annotation — never reuse it for different
+                content. Omitted, the server mints a fresh id per call and a retry writes a new annotation.
     """
 
     run_id: str | Unset = UNSET
@@ -37,6 +43,7 @@ class AnnotateRequest:
     target_event_id: str | Unset = UNSET
     payload_json: str | Unset = UNSET
     project_id: str | Unset = UNSET
+    event_id: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -50,34 +57,40 @@ class AnnotateRequest:
 
         project_id = self.project_id
 
+        event_id = self.event_id
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if run_id is not UNSET:
-            field_dict["runId"] = run_id
+            field_dict["run_id"] = run_id
         if schema_name is not UNSET:
-            field_dict["schemaName"] = schema_name
+            field_dict["schema_name"] = schema_name
         if target_event_id is not UNSET:
-            field_dict["targetEventId"] = target_event_id
+            field_dict["target_event_id"] = target_event_id
         if payload_json is not UNSET:
-            field_dict["payloadJson"] = payload_json
+            field_dict["payload_json"] = payload_json
         if project_id is not UNSET:
-            field_dict["projectId"] = project_id
+            field_dict["project_id"] = project_id
+        if event_id is not UNSET:
+            field_dict["event_id"] = event_id
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_id = d.pop("runId", UNSET)
+        run_id = d.pop("run_id", UNSET)
 
-        schema_name = d.pop("schemaName", UNSET)
+        schema_name = d.pop("schema_name", UNSET)
 
-        target_event_id = d.pop("targetEventId", UNSET)
+        target_event_id = d.pop("target_event_id", UNSET)
 
-        payload_json = d.pop("payloadJson", UNSET)
+        payload_json = d.pop("payload_json", UNSET)
 
-        project_id = d.pop("projectId", UNSET)
+        project_id = d.pop("project_id", UNSET)
+
+        event_id = d.pop("event_id", UNSET)
 
         annotate_request = cls(
             run_id=run_id,
@@ -85,6 +98,7 @@ class AnnotateRequest:
             target_event_id=target_event_id,
             payload_json=payload_json,
             project_id=project_id,
+            event_id=event_id,
         )
 
         annotate_request.additional_properties = d

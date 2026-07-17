@@ -15,7 +15,9 @@ T = TypeVar("T", bound="AnnotateResponse")
 class AnnotateResponse:
     """
     Attributes:
-        event_id (str | Unset): The minted, stable `event_id` of the annotation event (the dedup/lookup key).
+        event_id (str | Unset): The stable `event_id` of the annotation event (the dedup/lookup key): the caller-minted
+            id when
+             the request carried one, otherwise the freshly server-minted one.
     """
 
     event_id: str | Unset = UNSET
@@ -28,14 +30,14 @@ class AnnotateResponse:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if event_id is not UNSET:
-            field_dict["eventId"] = event_id
+            field_dict["event_id"] = event_id
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        event_id = d.pop("eventId", UNSET)
+        event_id = d.pop("event_id", UNSET)
 
         annotate_response = cls(
             event_id=event_id,

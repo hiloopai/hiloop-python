@@ -3,8 +3,8 @@ from typing import Any
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.get_usage_series_response import GetUsageSeriesResponse
 from ...types import UNSET, Response, Unset
 
@@ -19,13 +19,13 @@ def _get_kwargs(
 
     params: dict[str, Any] = {}
 
-    params["projectId"] = project_id
+    params["project_id"] = project_id
 
-    params["startTime"] = start_time
+    params["start_time"] = start_time
 
-    params["endTime"] = end_time
+    params["end_time"] = end_time
 
-    params["bucketSeconds"] = bucket_seconds
+    params["bucket_seconds"] = bucket_seconds
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -38,21 +38,41 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> GetUsageSeriesResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorBody | GetUsageSeriesResponse | None:
     if response.status_code == 200:
         response_200 = GetUsageSeriesResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[GetUsageSeriesResponse]:
+) -> Response[ErrorBody | GetUsageSeriesResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -68,7 +88,7 @@ def sync_detailed(
     start_time: str | Unset = UNSET,
     end_time: str | Unset = UNSET,
     bucket_seconds: str | Unset = UNSET,
-) -> Response[GetUsageSeriesResponse]:
+) -> Response[ErrorBody | GetUsageSeriesResponse]:
     """Get reserved-resource usage over time for the caller's tenant, bucketed for the usage dashboard's
      over-time charts.
 
@@ -83,7 +103,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[GetUsageSeriesResponse]
+        Response[ErrorBody | GetUsageSeriesResponse]
     """
 
     kwargs = _get_kwargs(
@@ -107,7 +127,7 @@ def sync(
     start_time: str | Unset = UNSET,
     end_time: str | Unset = UNSET,
     bucket_seconds: str | Unset = UNSET,
-) -> GetUsageSeriesResponse | None:
+) -> ErrorBody | GetUsageSeriesResponse | None:
     """Get reserved-resource usage over time for the caller's tenant, bucketed for the usage dashboard's
      over-time charts.
 
@@ -122,7 +142,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        GetUsageSeriesResponse
+        ErrorBody | GetUsageSeriesResponse
     """
 
     return sync_detailed(
@@ -141,7 +161,7 @@ async def asyncio_detailed(
     start_time: str | Unset = UNSET,
     end_time: str | Unset = UNSET,
     bucket_seconds: str | Unset = UNSET,
-) -> Response[GetUsageSeriesResponse]:
+) -> Response[ErrorBody | GetUsageSeriesResponse]:
     """Get reserved-resource usage over time for the caller's tenant, bucketed for the usage dashboard's
      over-time charts.
 
@@ -156,7 +176,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[GetUsageSeriesResponse]
+        Response[ErrorBody | GetUsageSeriesResponse]
     """
 
     kwargs = _get_kwargs(
@@ -178,7 +198,7 @@ async def asyncio(
     start_time: str | Unset = UNSET,
     end_time: str | Unset = UNSET,
     bucket_seconds: str | Unset = UNSET,
-) -> GetUsageSeriesResponse | None:
+) -> ErrorBody | GetUsageSeriesResponse | None:
     """Get reserved-resource usage over time for the caller's tenant, bucketed for the usage dashboard's
      over-time charts.
 
@@ -193,7 +213,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        GetUsageSeriesResponse
+        ErrorBody | GetUsageSeriesResponse
     """
 
     return (

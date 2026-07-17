@@ -38,9 +38,9 @@ class CapabilityRequirement:
         if key is not UNSET:
             field_dict["key"] = key
         if minimum_support is not UNSET:
-            field_dict["minimumSupport"] = minimum_support
+            field_dict["minimum_support"] = minimum_support
         if minimum_maturity is not UNSET:
-            field_dict["minimumMaturity"] = minimum_maturity
+            field_dict["minimum_maturity"] = minimum_maturity
 
         return field_dict
 
@@ -49,9 +49,9 @@ class CapabilityRequirement:
         d = dict(src_dict)
         key = d.pop("key", UNSET)
 
-        minimum_support = d.pop("minimumSupport", UNSET)
+        minimum_support = d.pop("minimum_support", UNSET)
 
-        minimum_maturity = d.pop("minimumMaturity", UNSET)
+        minimum_maturity = d.pop("minimum_maturity", UNSET)
 
         capability_requirement = cls(
             key=key,

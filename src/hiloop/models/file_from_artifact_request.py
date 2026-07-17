@@ -36,9 +36,9 @@ class FileFromArtifactRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if sandbox_id is not UNSET:
-            field_dict["sandboxId"] = sandbox_id
+            field_dict["sandbox_id"] = sandbox_id
         if artifact_id is not UNSET:
-            field_dict["artifactId"] = artifact_id
+            field_dict["artifact_id"] = artifact_id
         if path is not UNSET:
             field_dict["path"] = path
 
@@ -47,9 +47,9 @@ class FileFromArtifactRequest:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        sandbox_id = d.pop("sandboxId", UNSET)
+        sandbox_id = d.pop("sandbox_id", UNSET)
 
-        artifact_id = d.pop("artifactId", UNSET)
+        artifact_id = d.pop("artifact_id", UNSET)
 
         path = d.pop("path", UNSET)
 

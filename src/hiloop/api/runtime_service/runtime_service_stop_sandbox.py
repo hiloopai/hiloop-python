@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.stop_sandbox_request import StopSandboxRequest
 from ...models.stop_sandbox_response import StopSandboxResponse
 from ...types import Response
@@ -33,19 +33,41 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> StopSandboxResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorBody | StopSandboxResponse | None:
     if response.status_code == 200:
         response_200 = StopSandboxResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[StopSandboxResponse]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorBody | StopSandboxResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -59,13 +81,12 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
-) -> Response[StopSandboxResponse]:
+) -> Response[ErrorBody | StopSandboxResponse]:
     """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
-     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
-     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
-     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
-     terminated and the stop is final. Work that completed before the stop is reported as succeeded
-     rather than interrupted.
+     is retained so it stays inspectable — distinct from DeleteSandbox. A versioned BranchFS
+     workspace is destroyed only after its exact terminal bytes are sealed; ResumeSandbox boots a
+     new generation from that immutable change. Process and memory state do not survive that path.
+     Ephemeral scratch storage has no continuation and requires fresh_workspace on resume.
 
     Args:
         id (str):
@@ -76,7 +97,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[StopSandboxResponse]
+        Response[ErrorBody | StopSandboxResponse]
     """
 
     kwargs = _get_kwargs(
@@ -96,13 +117,12 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
-) -> StopSandboxResponse | None:
+) -> ErrorBody | StopSandboxResponse | None:
     """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
-     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
-     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
-     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
-     terminated and the stop is final. Work that completed before the stop is reported as succeeded
-     rather than interrupted.
+     is retained so it stays inspectable — distinct from DeleteSandbox. A versioned BranchFS
+     workspace is destroyed only after its exact terminal bytes are sealed; ResumeSandbox boots a
+     new generation from that immutable change. Process and memory state do not survive that path.
+     Ephemeral scratch storage has no continuation and requires fresh_workspace on resume.
 
     Args:
         id (str):
@@ -113,7 +133,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        StopSandboxResponse
+        ErrorBody | StopSandboxResponse
     """
 
     return sync_detailed(
@@ -128,13 +148,12 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
-) -> Response[StopSandboxResponse]:
+) -> Response[ErrorBody | StopSandboxResponse]:
     """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
-     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
-     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
-     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
-     terminated and the stop is final. Work that completed before the stop is reported as succeeded
-     rather than interrupted.
+     is retained so it stays inspectable — distinct from DeleteSandbox. A versioned BranchFS
+     workspace is destroyed only after its exact terminal bytes are sealed; ResumeSandbox boots a
+     new generation from that immutable change. Process and memory state do not survive that path.
+     Ephemeral scratch storage has no continuation and requires fresh_workspace on resume.
 
     Args:
         id (str):
@@ -145,7 +164,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[StopSandboxResponse]
+        Response[ErrorBody | StopSandboxResponse]
     """
 
     kwargs = _get_kwargs(
@@ -163,13 +182,12 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: StopSandboxRequest,
-) -> StopSandboxResponse | None:
+) -> ErrorBody | StopSandboxResponse | None:
     """Gracefully stop a running sandbox. The sandbox comes to rest in a stopped state and its record
-     is retained so it stays inspectable — distinct from DeleteSandbox, which tears the sandbox down
-     entirely. Where the provider supports state-preserving suspension, the workload's filesystem
-     and process state are preserved and ResumeSandbox brings it back; otherwise the workload is
-     terminated and the stop is final. Work that completed before the stop is reported as succeeded
-     rather than interrupted.
+     is retained so it stays inspectable — distinct from DeleteSandbox. A versioned BranchFS
+     workspace is destroyed only after its exact terminal bytes are sealed; ResumeSandbox boots a
+     new generation from that immutable change. Process and memory state do not survive that path.
+     Ephemeral scratch storage has no continuation and requires fresh_workspace on resume.
 
     Args:
         id (str):
@@ -180,7 +198,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        StopSandboxResponse
+        ErrorBody | StopSandboxResponse
     """
 
     return (

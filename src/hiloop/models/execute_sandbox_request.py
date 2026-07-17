@@ -42,7 +42,7 @@ class ExecuteSandboxRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if sandbox_id is not UNSET:
-            field_dict["sandboxId"] = sandbox_id
+            field_dict["sandbox_id"] = sandbox_id
         if command is not UNSET:
             field_dict["command"] = command
         if stdin is not UNSET:
@@ -55,7 +55,7 @@ class ExecuteSandboxRequest:
         from ..models.command_spec import CommandSpec
 
         d = dict(src_dict)
-        sandbox_id = d.pop("sandboxId", UNSET)
+        sandbox_id = d.pop("sandbox_id", UNSET)
 
         _command = d.pop("command", UNSET)
         command: CommandSpec | Unset

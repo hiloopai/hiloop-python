@@ -6,7 +6,6 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-from ..models.create_sandbox_secret_request_kind import CreateSandboxSecretRequestKind
 from ..types import UNSET, Unset
 
 T = TypeVar("T", bound="CreateSandboxSecretRequest")
@@ -17,7 +16,8 @@ class CreateSandboxSecretRequest:
     """
     Attributes:
         name (str | Unset): The secret name — unique within the caller's tenant.
-        kind (CreateSandboxSecretRequestKind | Unset): The credential kind.
+        kind (str | Unset): The credential kind: `api_key`, `bearer`, `basic`, or `custom`. Empty defaults to `custom`;
+             any other value is rejected.
         value (str | Unset): The secret value. WRITE-ONLY: stored encrypted and never returned by this API again; the
             proxy
              resolves it at request time.
@@ -29,7 +29,7 @@ class CreateSandboxSecretRequest:
     """
 
     name: str | Unset = UNSET
-    kind: CreateSandboxSecretRequestKind | Unset = UNSET
+    kind: str | Unset = UNSET
     value: str | Unset = UNSET
     dest_host: str | Unset = UNSET
     dest_header: str | Unset = UNSET
@@ -39,9 +39,7 @@ class CreateSandboxSecretRequest:
     def to_dict(self) -> dict[str, Any]:
         name = self.name
 
-        kind: str | Unset = UNSET
-        if not isinstance(self.kind, Unset):
-            kind = self.kind.value
+        kind = self.kind
 
         value = self.value
 
@@ -61,9 +59,9 @@ class CreateSandboxSecretRequest:
         if value is not UNSET:
             field_dict["value"] = value
         if dest_host is not UNSET:
-            field_dict["destHost"] = dest_host
+            field_dict["dest_host"] = dest_host
         if dest_header is not UNSET:
-            field_dict["destHeader"] = dest_header
+            field_dict["dest_header"] = dest_header
         if scheme is not UNSET:
             field_dict["scheme"] = scheme
 
@@ -74,18 +72,13 @@ class CreateSandboxSecretRequest:
         d = dict(src_dict)
         name = d.pop("name", UNSET)
 
-        _kind = d.pop("kind", UNSET)
-        kind: CreateSandboxSecretRequestKind | Unset
-        if isinstance(_kind, Unset):
-            kind = UNSET
-        else:
-            kind = CreateSandboxSecretRequestKind(_kind)
+        kind = d.pop("kind", UNSET)
 
         value = d.pop("value", UNSET)
 
-        dest_host = d.pop("destHost", UNSET)
+        dest_host = d.pop("dest_host", UNSET)
 
-        dest_header = d.pop("destHeader", UNSET)
+        dest_header = d.pop("dest_header", UNSET)
 
         scheme = d.pop("scheme", UNSET)
 

@@ -66,17 +66,17 @@ class Execution:
         if id is not UNSET:
             field_dict["id"] = id
         if tenant_id is not UNSET:
-            field_dict["tenantId"] = tenant_id
+            field_dict["tenant_id"] = tenant_id
         if sandbox_id is not UNSET:
-            field_dict["sandboxId"] = sandbox_id
+            field_dict["sandbox_id"] = sandbox_id
         if state is not UNSET:
             field_dict["state"] = state
         if exit_code is not UNSET:
-            field_dict["exitCode"] = exit_code
+            field_dict["exit_code"] = exit_code
         if stdout_artifact_id is not UNSET:
-            field_dict["stdoutArtifactId"] = stdout_artifact_id
+            field_dict["stdout_artifact_id"] = stdout_artifact_id
         if stderr_artifact_id is not UNSET:
-            field_dict["stderrArtifactId"] = stderr_artifact_id
+            field_dict["stderr_artifact_id"] = stderr_artifact_id
         if error is not UNSET:
             field_dict["error"] = error
 
@@ -89,17 +89,17 @@ class Execution:
         d = dict(src_dict)
         id = d.pop("id", UNSET)
 
-        tenant_id = d.pop("tenantId", UNSET)
+        tenant_id = d.pop("tenant_id", UNSET)
 
-        sandbox_id = d.pop("sandboxId", UNSET)
+        sandbox_id = d.pop("sandbox_id", UNSET)
 
         state = d.pop("state", UNSET)
 
-        exit_code = d.pop("exitCode", UNSET)
+        exit_code = d.pop("exit_code", UNSET)
 
-        stdout_artifact_id = d.pop("stdoutArtifactId", UNSET)
+        stdout_artifact_id = d.pop("stdout_artifact_id", UNSET)
 
-        stderr_artifact_id = d.pop("stderrArtifactId", UNSET)
+        stderr_artifact_id = d.pop("stderr_artifact_id", UNSET)
 
         _error = d.pop("error", UNSET)
         error: ExecutionError | Unset

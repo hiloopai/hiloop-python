@@ -9,6 +9,7 @@ from attrs import field as _attrs_field
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
+    from ..models.minted_port_exposure import MintedPortExposure
     from ..models.operation import Operation
     from ..models.sandbox import Sandbox
 
@@ -22,10 +23,14 @@ class RestoreSnapshotResponse:
     Attributes:
         sandbox (Sandbox | Unset):
         operation (Operation | Unset):
+        inherited_exposures (list[MintedPortExposure] | Unset): Token-mode exposure intent inherited from the snapshot,
+            each with a newly minted child token.
+             Empty on an idempotent replay because plaintext tokens are never stored.
     """
 
     sandbox: Sandbox | Unset = UNSET
     operation: Operation | Unset = UNSET
+    inherited_exposures: list[MintedPortExposure] | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -37,6 +42,13 @@ class RestoreSnapshotResponse:
         if not isinstance(self.operation, Unset):
             operation = self.operation.to_dict()
 
+        inherited_exposures: list[dict[str, Any]] | Unset = UNSET
+        if not isinstance(self.inherited_exposures, Unset):
+            inherited_exposures = []
+            for inherited_exposures_item_data in self.inherited_exposures:
+                inherited_exposures_item = inherited_exposures_item_data.to_dict()
+                inherited_exposures.append(inherited_exposures_item)
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
@@ -44,11 +56,14 @@ class RestoreSnapshotResponse:
             field_dict["sandbox"] = sandbox
         if operation is not UNSET:
             field_dict["operation"] = operation
+        if inherited_exposures is not UNSET:
+            field_dict["inherited_exposures"] = inherited_exposures
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.minted_port_exposure import MintedPortExposure
         from ..models.operation import Operation
         from ..models.sandbox import Sandbox
 
@@ -67,9 +82,19 @@ class RestoreSnapshotResponse:
         else:
             operation = Operation.from_dict(_operation)
 
+        _inherited_exposures = d.pop("inherited_exposures", UNSET)
+        inherited_exposures: list[MintedPortExposure] | Unset = UNSET
+        if _inherited_exposures is not UNSET:
+            inherited_exposures = []
+            for inherited_exposures_item_data in _inherited_exposures:
+                inherited_exposures_item = MintedPortExposure.from_dict(inherited_exposures_item_data)
+
+                inherited_exposures.append(inherited_exposures_item)
+
         restore_snapshot_response = cls(
             sandbox=sandbox,
             operation=operation,
+            inherited_exposures=inherited_exposures,
         )
 
         restore_snapshot_response.additional_properties = d

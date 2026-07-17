@@ -46,7 +46,7 @@ class GetRunTreeResponse:
         if runs is not UNSET:
             field_dict["runs"] = runs
         if next_page_token is not UNSET:
-            field_dict["nextPageToken"] = next_page_token
+            field_dict["next_page_token"] = next_page_token
 
         return field_dict
 
@@ -64,7 +64,7 @@ class GetRunTreeResponse:
 
                 runs.append(runs_item)
 
-        next_page_token = d.pop("nextPageToken", UNSET)
+        next_page_token = d.pop("next_page_token", UNSET)
 
         get_run_tree_response = cls(
             runs=runs,

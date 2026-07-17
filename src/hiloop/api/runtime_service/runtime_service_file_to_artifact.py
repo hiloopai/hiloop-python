@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.file_to_artifact_request import FileToArtifactRequest
 from ...models.file_to_artifact_response import FileToArtifactResponse
 from ...types import UNSET, Response, Unset
@@ -36,21 +36,41 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> FileToArtifactResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorBody | FileToArtifactResponse | None:
     if response.status_code == 200:
         response_200 = FileToArtifactResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[FileToArtifactResponse]:
+) -> Response[ErrorBody | FileToArtifactResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -65,7 +85,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: FileToArtifactRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[FileToArtifactResponse]:
+) -> Response[ErrorBody | FileToArtifactResponse]:
     """
     Args:
         sandbox_id (str):
@@ -77,7 +97,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[FileToArtifactResponse]
+        Response[ErrorBody | FileToArtifactResponse]
     """
 
     kwargs = _get_kwargs(
@@ -99,7 +119,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: FileToArtifactRequest,
     idempotency_key: str | Unset = UNSET,
-) -> FileToArtifactResponse | None:
+) -> ErrorBody | FileToArtifactResponse | None:
     """
     Args:
         sandbox_id (str):
@@ -111,7 +131,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        FileToArtifactResponse
+        ErrorBody | FileToArtifactResponse
     """
 
     return sync_detailed(
@@ -128,7 +148,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: FileToArtifactRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[FileToArtifactResponse]:
+) -> Response[ErrorBody | FileToArtifactResponse]:
     """
     Args:
         sandbox_id (str):
@@ -140,7 +160,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[FileToArtifactResponse]
+        Response[ErrorBody | FileToArtifactResponse]
     """
 
     kwargs = _get_kwargs(
@@ -160,7 +180,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: FileToArtifactRequest,
     idempotency_key: str | Unset = UNSET,
-) -> FileToArtifactResponse | None:
+) -> ErrorBody | FileToArtifactResponse | None:
     """
     Args:
         sandbox_id (str):
@@ -172,7 +192,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        FileToArtifactResponse
+        ErrorBody | FileToArtifactResponse
     """
 
     return (

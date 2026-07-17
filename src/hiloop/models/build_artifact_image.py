@@ -28,14 +28,14 @@ class BuildArtifactImage:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if artifact_ref is not UNSET:
-            field_dict["artifactRef"] = artifact_ref
+            field_dict["artifact_ref"] = artifact_ref
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        artifact_ref = d.pop("artifactRef", UNSET)
+        artifact_ref = d.pop("artifact_ref", UNSET)
 
         build_artifact_image = cls(
             artifact_ref=artifact_ref,

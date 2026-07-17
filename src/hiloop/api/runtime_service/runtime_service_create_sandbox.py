@@ -3,10 +3,10 @@ from typing import Any
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_sandbox_request import CreateSandboxRequest
 from ...models.create_sandbox_response import CreateSandboxResponse
+from ...models.error_body import ErrorBody
 from ...types import UNSET, Response, Unset
 
 
@@ -32,21 +32,41 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> CreateSandboxResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> CreateSandboxResponse | ErrorBody | None:
     if response.status_code == 200:
         response_200 = CreateSandboxResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[CreateSandboxResponse]:
+) -> Response[CreateSandboxResponse | ErrorBody]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -60,7 +80,7 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: CreateSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[CreateSandboxResponse]:
+) -> Response[CreateSandboxResponse | ErrorBody]:
     """
     Args:
         idempotency_key (str | Unset):
@@ -71,7 +91,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[CreateSandboxResponse]
+        Response[CreateSandboxResponse | ErrorBody]
     """
 
     kwargs = _get_kwargs(
@@ -91,7 +111,7 @@ def sync(
     client: AuthenticatedClient | Client,
     body: CreateSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> CreateSandboxResponse | None:
+) -> CreateSandboxResponse | ErrorBody | None:
     """
     Args:
         idempotency_key (str | Unset):
@@ -102,7 +122,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        CreateSandboxResponse
+        CreateSandboxResponse | ErrorBody
     """
 
     return sync_detailed(
@@ -117,7 +137,7 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: CreateSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[CreateSandboxResponse]:
+) -> Response[CreateSandboxResponse | ErrorBody]:
     """
     Args:
         idempotency_key (str | Unset):
@@ -128,7 +148,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[CreateSandboxResponse]
+        Response[CreateSandboxResponse | ErrorBody]
     """
 
     kwargs = _get_kwargs(
@@ -146,7 +166,7 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: CreateSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> CreateSandboxResponse | None:
+) -> CreateSandboxResponse | ErrorBody | None:
     """
     Args:
         idempotency_key (str | Unset):
@@ -157,7 +177,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        CreateSandboxResponse
+        CreateSandboxResponse | ErrorBody
     """
 
     return (

@@ -3,8 +3,8 @@ from typing import Any
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.list_runtime_capabilities_response import ListRuntimeCapabilitiesResponse
 from ...types import Response
 
@@ -21,21 +21,39 @@ def _get_kwargs() -> dict[str, Any]:
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ListRuntimeCapabilitiesResponse | None:
+) -> ErrorBody | ListRuntimeCapabilitiesResponse | None:
     if response.status_code == 200:
         response_200 = ListRuntimeCapabilitiesResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ListRuntimeCapabilitiesResponse]:
+) -> Response[ErrorBody | ListRuntimeCapabilitiesResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -47,14 +65,14 @@ def _build_response(
 def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ListRuntimeCapabilitiesResponse]:
+) -> Response[ErrorBody | ListRuntimeCapabilitiesResponse]:
     """
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ListRuntimeCapabilitiesResponse]
+        Response[ErrorBody | ListRuntimeCapabilitiesResponse]
     """
 
     kwargs = _get_kwargs()
@@ -69,14 +87,14 @@ def sync_detailed(
 def sync(
     *,
     client: AuthenticatedClient | Client,
-) -> ListRuntimeCapabilitiesResponse | None:
+) -> ErrorBody | ListRuntimeCapabilitiesResponse | None:
     """
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ListRuntimeCapabilitiesResponse
+        ErrorBody | ListRuntimeCapabilitiesResponse
     """
 
     return sync_detailed(
@@ -87,14 +105,14 @@ def sync(
 async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ListRuntimeCapabilitiesResponse]:
+) -> Response[ErrorBody | ListRuntimeCapabilitiesResponse]:
     """
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ListRuntimeCapabilitiesResponse]
+        Response[ErrorBody | ListRuntimeCapabilitiesResponse]
     """
 
     kwargs = _get_kwargs()
@@ -107,14 +125,14 @@ async def asyncio_detailed(
 async def asyncio(
     *,
     client: AuthenticatedClient | Client,
-) -> ListRuntimeCapabilitiesResponse | None:
+) -> ErrorBody | ListRuntimeCapabilitiesResponse | None:
     """
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ListRuntimeCapabilitiesResponse
+        ErrorBody | ListRuntimeCapabilitiesResponse
     """
 
     return (

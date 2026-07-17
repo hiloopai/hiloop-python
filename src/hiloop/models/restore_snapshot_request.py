@@ -23,24 +23,39 @@ T = TypeVar("T", bound="RestoreSnapshotRequest")
 
 @_attrs_define
 class RestoreSnapshotRequest:
-    """
-    Attributes:
-        snapshot_id (str | Unset):
-        project_id (str | Unset):
-        name (str | Unset):
-        image (SandboxImage | Unset):
-        resources (ResourceSpec | Unset):
-        requested_capabilities (list[CapabilityRequirement] | Unset):
-        labels (RestoreSnapshotRequestLabels | Unset):
-        contents (str | Unset):
-        allow_fallback (bool | Unset):
-        capture (CaptureSpec | Unset):
-        egress (EgressPolicy | Unset): Provider-neutral outbound network policy for a sandbox. Omitted or
-            EGRESS_MODE_UNSPECIFIED leaves
-             outbound traffic unbounded (the default-allow behavior). Enforced at the strongest layer the
-             runtime supports.
-        secrets (list[SecretBinding] | Unset): Secret bindings for the restored sandbox. Resolved per child; never
-            inherited from the snapshot.
+    """Retired snapshot-restore compatibility request. Clean sandbox-cell deployments return
+    unsupported; resume an exact sealed BranchFS workspace into a fresh runtime generation instead.
+
+       Attributes:
+           snapshot_id (str | Unset):
+           project_id (str | Unset):
+           name (str | Unset):
+           image (SandboxImage | Unset): Explicit immutable environment selection. A create must name a deployment profile
+               or exact OCI
+                environment; omitting the image does not select a provider default.
+           resources (ResourceSpec | Unset):
+           requested_capabilities (list[CapabilityRequirement] | Unset):
+           labels (RestoreSnapshotRequestLabels | Unset):
+           contents (str | Unset): Required snapshot semantics for the restore. Omitted, the restore requires the
+               snapshot's
+                recorded effective semantics — restoring any snapshot with a minimal request is compatible by
+                construction, like the omitted image and resources fields. An explicit value must match the
+                snapshot's effective semantics exactly unless allow_fallback is set.
+           allow_fallback (bool | Unset): Accept lower effective semantics than an explicit `contents` requirement. Has no
+               effect when
+                `contents` is omitted: the inherited requirement already matches the snapshot.
+           capture (CaptureSpec | Unset):
+           egress (EgressPolicy | Unset): Provider-neutral outbound network policy for a sandbox. Omitted or
+               EGRESS_MODE_UNSPECIFIED leaves
+                outbound traffic unbounded (the default-allow behavior). Enforced at the strongest layer the
+                runtime supports.
+           secrets (list[SecretBinding] | Unset): Secret bindings for the restored sandbox. Resolved per child; never
+               inherited from the snapshot.
+           execute_as_workload (str | Unset): Optional registered workload name to run the restored sandbox as. A restore
+               declares its
+                executing identity anew — a snapshot carries data, not authority — so nothing is inherited: when
+                set, the restored sandbox is workload-classed (the caller must hold launch rights and the name
+                must be registered); when empty, it executes as the restorer's own identity.
     """
 
     snapshot_id: str | Unset = UNSET
@@ -55,6 +70,7 @@ class RestoreSnapshotRequest:
     capture: CaptureSpec | Unset = UNSET
     egress: EgressPolicy | Unset = UNSET
     secrets: list[SecretBinding] | Unset = UNSET
+    execute_as_workload: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -102,13 +118,15 @@ class RestoreSnapshotRequest:
                 secrets_item = secrets_item_data.to_dict()
                 secrets.append(secrets_item)
 
+        execute_as_workload = self.execute_as_workload
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if snapshot_id is not UNSET:
-            field_dict["snapshotId"] = snapshot_id
+            field_dict["snapshot_id"] = snapshot_id
         if project_id is not UNSET:
-            field_dict["projectId"] = project_id
+            field_dict["project_id"] = project_id
         if name is not UNSET:
             field_dict["name"] = name
         if image is not UNSET:
@@ -116,19 +134,21 @@ class RestoreSnapshotRequest:
         if resources is not UNSET:
             field_dict["resources"] = resources
         if requested_capabilities is not UNSET:
-            field_dict["requestedCapabilities"] = requested_capabilities
+            field_dict["requested_capabilities"] = requested_capabilities
         if labels is not UNSET:
             field_dict["labels"] = labels
         if contents is not UNSET:
             field_dict["contents"] = contents
         if allow_fallback is not UNSET:
-            field_dict["allowFallback"] = allow_fallback
+            field_dict["allow_fallback"] = allow_fallback
         if capture is not UNSET:
             field_dict["capture"] = capture
         if egress is not UNSET:
             field_dict["egress"] = egress
         if secrets is not UNSET:
             field_dict["secrets"] = secrets
+        if execute_as_workload is not UNSET:
+            field_dict["execute_as_workload"] = execute_as_workload
 
         return field_dict
 
@@ -143,9 +163,9 @@ class RestoreSnapshotRequest:
         from ..models.secret_binding import SecretBinding
 
         d = dict(src_dict)
-        snapshot_id = d.pop("snapshotId", UNSET)
+        snapshot_id = d.pop("snapshot_id", UNSET)
 
-        project_id = d.pop("projectId", UNSET)
+        project_id = d.pop("project_id", UNSET)
 
         name = d.pop("name", UNSET)
 
@@ -163,7 +183,7 @@ class RestoreSnapshotRequest:
         else:
             resources = ResourceSpec.from_dict(_resources)
 
-        _requested_capabilities = d.pop("requestedCapabilities", UNSET)
+        _requested_capabilities = d.pop("requested_capabilities", UNSET)
         requested_capabilities: list[CapabilityRequirement] | Unset = UNSET
         if _requested_capabilities is not UNSET:
             requested_capabilities = []
@@ -181,7 +201,7 @@ class RestoreSnapshotRequest:
 
         contents = d.pop("contents", UNSET)
 
-        allow_fallback = d.pop("allowFallback", UNSET)
+        allow_fallback = d.pop("allow_fallback", UNSET)
 
         _capture = d.pop("capture", UNSET)
         capture: CaptureSpec | Unset
@@ -206,6 +226,8 @@ class RestoreSnapshotRequest:
 
                 secrets.append(secrets_item)
 
+        execute_as_workload = d.pop("execute_as_workload", UNSET)
+
         restore_snapshot_request = cls(
             snapshot_id=snapshot_id,
             project_id=project_id,
@@ -219,6 +241,7 @@ class RestoreSnapshotRequest:
             capture=capture,
             egress=egress,
             secrets=secrets,
+            execute_as_workload=execute_as_workload,
         )
 
         restore_snapshot_request.additional_properties = d

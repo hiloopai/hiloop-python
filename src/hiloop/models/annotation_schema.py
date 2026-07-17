@@ -76,7 +76,7 @@ class AnnotationSchema:
         if id is not UNSET:
             field_dict["id"] = id
         if tenant_id is not UNSET:
-            field_dict["tenantId"] = tenant_id
+            field_dict["tenant_id"] = tenant_id
         if name is not UNSET:
             field_dict["name"] = name
         if version is not UNSET:
@@ -84,13 +84,13 @@ class AnnotationSchema:
         if description is not UNSET:
             field_dict["description"] = description
         if json_schema is not UNSET:
-            field_dict["jsonSchema"] = json_schema
+            field_dict["json_schema"] = json_schema
         if archived_at is not UNSET:
-            field_dict["archivedAt"] = archived_at
+            field_dict["archived_at"] = archived_at
         if created_at is not UNSET:
-            field_dict["createdAt"] = created_at
+            field_dict["created_at"] = created_at
         if promoted_fields is not UNSET:
-            field_dict["promotedFields"] = promoted_fields
+            field_dict["promoted_fields"] = promoted_fields
 
         return field_dict
 
@@ -101,7 +101,7 @@ class AnnotationSchema:
         d = dict(src_dict)
         id = d.pop("id", UNSET)
 
-        tenant_id = d.pop("tenantId", UNSET)
+        tenant_id = d.pop("tenant_id", UNSET)
 
         name = d.pop("name", UNSET)
 
@@ -109,13 +109,13 @@ class AnnotationSchema:
 
         description = d.pop("description", UNSET)
 
-        json_schema = d.pop("jsonSchema", UNSET)
+        json_schema = d.pop("json_schema", UNSET)
 
-        archived_at = d.pop("archivedAt", UNSET)
+        archived_at = d.pop("archived_at", UNSET)
 
-        created_at = d.pop("createdAt", UNSET)
+        created_at = d.pop("created_at", UNSET)
 
-        _promoted_fields = d.pop("promotedFields", UNSET)
+        _promoted_fields = d.pop("promoted_fields", UNSET)
         promoted_fields: list[PromotedField] | Unset = UNSET
         if _promoted_fields is not UNSET:
             promoted_fields = []

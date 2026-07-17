@@ -45,9 +45,9 @@ class ReservedResources:
         if cpus is not UNSET:
             field_dict["cpus"] = cpus
         if memory_mb is not UNSET:
-            field_dict["memoryMb"] = memory_mb
+            field_dict["memory_mb"] = memory_mb
         if disk_mb is not UNSET:
-            field_dict["diskMb"] = disk_mb
+            field_dict["disk_mb"] = disk_mb
         if gpus is not UNSET:
             field_dict["gpus"] = gpus
 
@@ -58,9 +58,9 @@ class ReservedResources:
         d = dict(src_dict)
         cpus = d.pop("cpus", UNSET)
 
-        memory_mb = d.pop("memoryMb", UNSET)
+        memory_mb = d.pop("memory_mb", UNSET)
 
-        disk_mb = d.pop("diskMb", UNSET)
+        disk_mb = d.pop("disk_mb", UNSET)
 
         gpus = d.pop("gpus", UNSET)
 

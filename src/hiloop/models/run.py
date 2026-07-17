@@ -47,6 +47,22 @@ class Run:
            sandbox_id (str | Unset): The sandbox executing (or last to execute) this run, when the run is sandbox-backed.
                Empty for
                 a run with no sandbox (e.g. a local wrapped run).
+           last_activity_at (str | Unset): When the run last showed a liveness signal (RFC 3339): the time of its most
+               recent telemetry
+                event, or started_at for a run that has emitted no events yet. Derived at read time, and only
+                for a `running` run that no sandbox executes — the runs whose liveness the platform cannot
+                attest. Empty for every other run, and empty when the signal is temporarily unavailable.
+           stale (bool | Unset): True when last_activity_at is older than the staleness window (15 minutes): the run still
+                reads `running` — no terminal state is ever recorded on the creator's behalf — but its creator
+                has gone quiet, so readers should render it as `running (stale)`. Always false when
+                last_activity_at is empty.
+           executing_principal (str | Unset): The stable id of the identity this run executes AS: the registered workload's
+               id when the
+                launch declared one, otherwise the launcher's own principal id (matching created_by). Forks
+                inherit it from their parent. Empty on runs that predate executing-identity recording.
+           executing_kind (str | Unset): The executing identity's kind: `user`, `service_account`, or `workload`. Empty on
+               runs that
+                predate executing-identity recording.
     """
 
     id: str | Unset = UNSET
@@ -65,6 +81,10 @@ class Run:
     branch_hlc_wall_ns: str | Unset = UNSET
     branch_hlc_logical: str | Unset = UNSET
     sandbox_id: str | Unset = UNSET
+    last_activity_at: str | Unset = UNSET
+    stale: bool | Unset = UNSET
+    executing_principal: str | Unset = UNSET
+    executing_kind: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -100,41 +120,57 @@ class Run:
 
         sandbox_id = self.sandbox_id
 
+        last_activity_at = self.last_activity_at
+
+        stale = self.stale
+
+        executing_principal = self.executing_principal
+
+        executing_kind = self.executing_kind
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if id is not UNSET:
             field_dict["id"] = id
         if tenant_id is not UNSET:
-            field_dict["tenantId"] = tenant_id
+            field_dict["tenant_id"] = tenant_id
         if project_id is not UNSET:
-            field_dict["projectId"] = project_id
+            field_dict["project_id"] = project_id
         if label is not UNSET:
             field_dict["label"] = label
         if status is not UNSET:
             field_dict["status"] = status
         if created_by is not UNSET:
-            field_dict["createdBy"] = created_by
+            field_dict["created_by"] = created_by
         if started_at is not UNSET:
-            field_dict["startedAt"] = started_at
+            field_dict["started_at"] = started_at
         if ended_at is not UNSET:
-            field_dict["endedAt"] = ended_at
+            field_dict["ended_at"] = ended_at
         if created_at is not UNSET:
-            field_dict["createdAt"] = created_at
+            field_dict["created_at"] = created_at
         if parent_run_id is not UNSET:
-            field_dict["parentRunId"] = parent_run_id
+            field_dict["parent_run_id"] = parent_run_id
         if root_run_id is not UNSET:
-            field_dict["rootRunId"] = root_run_id
+            field_dict["root_run_id"] = root_run_id
         if lineage_path is not UNSET:
-            field_dict["lineagePath"] = lineage_path
+            field_dict["lineage_path"] = lineage_path
         if branch_event_id is not UNSET:
-            field_dict["branchEventId"] = branch_event_id
+            field_dict["branch_event_id"] = branch_event_id
         if branch_hlc_wall_ns is not UNSET:
-            field_dict["branchHlcWallNs"] = branch_hlc_wall_ns
+            field_dict["branch_hlc_wall_ns"] = branch_hlc_wall_ns
         if branch_hlc_logical is not UNSET:
-            field_dict["branchHlcLogical"] = branch_hlc_logical
+            field_dict["branch_hlc_logical"] = branch_hlc_logical
         if sandbox_id is not UNSET:
-            field_dict["sandboxId"] = sandbox_id
+            field_dict["sandbox_id"] = sandbox_id
+        if last_activity_at is not UNSET:
+            field_dict["last_activity_at"] = last_activity_at
+        if stale is not UNSET:
+            field_dict["stale"] = stale
+        if executing_principal is not UNSET:
+            field_dict["executing_principal"] = executing_principal
+        if executing_kind is not UNSET:
+            field_dict["executing_kind"] = executing_kind
 
         return field_dict
 
@@ -143,35 +179,43 @@ class Run:
         d = dict(src_dict)
         id = d.pop("id", UNSET)
 
-        tenant_id = d.pop("tenantId", UNSET)
+        tenant_id = d.pop("tenant_id", UNSET)
 
-        project_id = d.pop("projectId", UNSET)
+        project_id = d.pop("project_id", UNSET)
 
         label = d.pop("label", UNSET)
 
         status = d.pop("status", UNSET)
 
-        created_by = d.pop("createdBy", UNSET)
+        created_by = d.pop("created_by", UNSET)
 
-        started_at = d.pop("startedAt", UNSET)
+        started_at = d.pop("started_at", UNSET)
 
-        ended_at = d.pop("endedAt", UNSET)
+        ended_at = d.pop("ended_at", UNSET)
 
-        created_at = d.pop("createdAt", UNSET)
+        created_at = d.pop("created_at", UNSET)
 
-        parent_run_id = d.pop("parentRunId", UNSET)
+        parent_run_id = d.pop("parent_run_id", UNSET)
 
-        root_run_id = d.pop("rootRunId", UNSET)
+        root_run_id = d.pop("root_run_id", UNSET)
 
-        lineage_path = d.pop("lineagePath", UNSET)
+        lineage_path = d.pop("lineage_path", UNSET)
 
-        branch_event_id = d.pop("branchEventId", UNSET)
+        branch_event_id = d.pop("branch_event_id", UNSET)
 
-        branch_hlc_wall_ns = d.pop("branchHlcWallNs", UNSET)
+        branch_hlc_wall_ns = d.pop("branch_hlc_wall_ns", UNSET)
 
-        branch_hlc_logical = d.pop("branchHlcLogical", UNSET)
+        branch_hlc_logical = d.pop("branch_hlc_logical", UNSET)
 
-        sandbox_id = d.pop("sandboxId", UNSET)
+        sandbox_id = d.pop("sandbox_id", UNSET)
+
+        last_activity_at = d.pop("last_activity_at", UNSET)
+
+        stale = d.pop("stale", UNSET)
+
+        executing_principal = d.pop("executing_principal", UNSET)
+
+        executing_kind = d.pop("executing_kind", UNSET)
 
         run = cls(
             id=id,
@@ -190,6 +234,10 @@ class Run:
             branch_hlc_wall_ns=branch_hlc_wall_ns,
             branch_hlc_logical=branch_hlc_logical,
             sandbox_id=sandbox_id,
+            last_activity_at=last_activity_at,
+            stale=stale,
+            executing_principal=executing_principal,
+            executing_kind=executing_kind,
         )
 
         run.additional_properties = d

@@ -42,9 +42,9 @@ class BranchDiffSpec:
         if signal is not UNSET:
             field_dict["signal"] = signal
         if run_id_a is not UNSET:
-            field_dict["runIdA"] = run_id_a
+            field_dict["run_id_a"] = run_id_a
         if run_id_b is not UNSET:
-            field_dict["runIdB"] = run_id_b
+            field_dict["run_id_b"] = run_id_b
 
         return field_dict
 
@@ -53,9 +53,9 @@ class BranchDiffSpec:
         d = dict(src_dict)
         signal = d.pop("signal", UNSET)
 
-        run_id_a = d.pop("runIdA", UNSET)
+        run_id_a = d.pop("run_id_a", UNSET)
 
-        run_id_b = d.pop("runIdB", UNSET)
+        run_id_b = d.pop("run_id_b", UNSET)
 
         branch_diff_spec = cls(
             signal=signal,

@@ -19,12 +19,14 @@ T = TypeVar("T", bound="SandboxImage")
 
 @_attrs_define
 class SandboxImage:
-    """
-    Attributes:
-        oci (OciImage | Unset):
-        build_artifact (BuildArtifactImage | Unset):
-        provider_native (ProviderNativeImage | Unset): Opaque image reference interpreted by the selected runtime
-            adapter.
+    """Explicit immutable environment selection. A create must name a deployment profile or exact OCI
+    environment; omitting the image does not select a provider default.
+
+       Attributes:
+           oci (OciImage | Unset):
+           build_artifact (BuildArtifactImage | Unset):
+           provider_native (ProviderNativeImage | Unset): Explicit deployment-defined runtime profile reference. It is
+               never a provider-default sentinel.
     """
 
     oci: OciImage | Unset = UNSET
@@ -51,9 +53,9 @@ class SandboxImage:
         if oci is not UNSET:
             field_dict["oci"] = oci
         if build_artifact is not UNSET:
-            field_dict["buildArtifact"] = build_artifact
+            field_dict["build_artifact"] = build_artifact
         if provider_native is not UNSET:
-            field_dict["providerNative"] = provider_native
+            field_dict["provider_native"] = provider_native
 
         return field_dict
 
@@ -71,14 +73,14 @@ class SandboxImage:
         else:
             oci = OciImage.from_dict(_oci)
 
-        _build_artifact = d.pop("buildArtifact", UNSET)
+        _build_artifact = d.pop("build_artifact", UNSET)
         build_artifact: BuildArtifactImage | Unset
         if isinstance(_build_artifact, Unset):
             build_artifact = UNSET
         else:
             build_artifact = BuildArtifactImage.from_dict(_build_artifact)
 
-        _provider_native = d.pop("providerNative", UNSET)
+        _provider_native = d.pop("provider_native", UNSET)
         provider_native: ProviderNativeImage | Unset
         if isinstance(_provider_native, Unset):
             provider_native = UNSET

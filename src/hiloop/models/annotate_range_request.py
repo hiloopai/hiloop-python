@@ -37,6 +37,12 @@ class AnnotateRangeRequest:
            range_end_event_id (str | Unset): The `event_id` whose recorded timestamp ends the annotated window. Set
                together with
                 `range_start_event_id`, and not alongside the nanosecond bounds.
+           event_id (str | Unset): Optional caller-minted `event_id` for the annotation event (a 26-character ULID).
+               Supplying one
+                makes retries safe: re-sending the request with the same `event_id` returns the existing
+                annotation instead of writing a duplicate, so an ambiguous failure (a 5xx or a lost response)
+                can be retried blindly. The id names this logical annotation — never reuse it for different
+                content. Omitted, the server mints a fresh id per call and a retry writes a new annotation.
     """
 
     run_id: str | Unset = UNSET
@@ -46,6 +52,7 @@ class AnnotateRangeRequest:
     payload_json: str | Unset = UNSET
     range_start_event_id: str | Unset = UNSET
     range_end_event_id: str | Unset = UNSET
+    event_id: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -63,42 +70,48 @@ class AnnotateRangeRequest:
 
         range_end_event_id = self.range_end_event_id
 
+        event_id = self.event_id
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if run_id is not UNSET:
-            field_dict["runId"] = run_id
+            field_dict["run_id"] = run_id
         if schema_name is not UNSET:
-            field_dict["schemaName"] = schema_name
+            field_dict["schema_name"] = schema_name
         if range_start_ns is not UNSET:
-            field_dict["rangeStartNs"] = range_start_ns
+            field_dict["range_start_ns"] = range_start_ns
         if range_end_ns is not UNSET:
-            field_dict["rangeEndNs"] = range_end_ns
+            field_dict["range_end_ns"] = range_end_ns
         if payload_json is not UNSET:
-            field_dict["payloadJson"] = payload_json
+            field_dict["payload_json"] = payload_json
         if range_start_event_id is not UNSET:
-            field_dict["rangeStartEventId"] = range_start_event_id
+            field_dict["range_start_event_id"] = range_start_event_id
         if range_end_event_id is not UNSET:
-            field_dict["rangeEndEventId"] = range_end_event_id
+            field_dict["range_end_event_id"] = range_end_event_id
+        if event_id is not UNSET:
+            field_dict["event_id"] = event_id
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        run_id = d.pop("runId", UNSET)
+        run_id = d.pop("run_id", UNSET)
 
-        schema_name = d.pop("schemaName", UNSET)
+        schema_name = d.pop("schema_name", UNSET)
 
-        range_start_ns = d.pop("rangeStartNs", UNSET)
+        range_start_ns = d.pop("range_start_ns", UNSET)
 
-        range_end_ns = d.pop("rangeEndNs", UNSET)
+        range_end_ns = d.pop("range_end_ns", UNSET)
 
-        payload_json = d.pop("payloadJson", UNSET)
+        payload_json = d.pop("payload_json", UNSET)
 
-        range_start_event_id = d.pop("rangeStartEventId", UNSET)
+        range_start_event_id = d.pop("range_start_event_id", UNSET)
 
-        range_end_event_id = d.pop("rangeEndEventId", UNSET)
+        range_end_event_id = d.pop("range_end_event_id", UNSET)
+
+        event_id = d.pop("event_id", UNSET)
 
         annotate_range_request = cls(
             run_id=run_id,
@@ -108,6 +121,7 @@ class AnnotateRangeRequest:
             payload_json=payload_json,
             range_start_event_id=range_start_event_id,
             range_end_event_id=range_end_event_id,
+            event_id=event_id,
         )
 
         annotate_range_request.additional_properties = d

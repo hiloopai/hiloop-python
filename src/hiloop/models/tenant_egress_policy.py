@@ -55,7 +55,7 @@ class TenantEgressPolicy:
         if enforcement is not UNSET:
             field_dict["enforcement"] = enforcement
         if updated_at is not UNSET:
-            field_dict["updatedAt"] = updated_at
+            field_dict["updated_at"] = updated_at
 
         return field_dict
 
@@ -78,7 +78,7 @@ class TenantEgressPolicy:
         else:
             enforcement = TenantEgressPolicyEnforcement(_enforcement)
 
-        updated_at = d.pop("updatedAt", UNSET)
+        updated_at = d.pop("updated_at", UNSET)
 
         tenant_egress_policy = cls(
             policy=policy,

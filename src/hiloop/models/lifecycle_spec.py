@@ -15,8 +15,7 @@ T = TypeVar("T", bound="LifecycleSpec")
 class LifecycleSpec:
     """Sandbox lifecycle policy: two independent clocks, matching how the completion sweep and the
     lifetime reaper enforce them. This intentionally exposes only the two expiry controls needed by
-    public callers; process defaults, mounts, environment, and user remain server-managed in the first
-    runtime slice.
+    public callers; process defaults, environment, and user remain server-managed.
 
        Attributes:
            lease_secs (str | Unset): Absolute max sandbox lifetime in seconds, regardless of activity — the honest upper
@@ -44,18 +43,18 @@ class LifecycleSpec:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if lease_secs is not UNSET:
-            field_dict["leaseSecs"] = lease_secs
+            field_dict["lease_secs"] = lease_secs
         if idle_timeout_secs is not UNSET:
-            field_dict["idleTimeoutSecs"] = idle_timeout_secs
+            field_dict["idle_timeout_secs"] = idle_timeout_secs
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        lease_secs = d.pop("leaseSecs", UNSET)
+        lease_secs = d.pop("lease_secs", UNSET)
 
-        idle_timeout_secs = d.pop("idleTimeoutSecs", UNSET)
+        idle_timeout_secs = d.pop("idle_timeout_secs", UNSET)
 
         lifecycle_spec = cls(
             lease_secs=lease_secs,

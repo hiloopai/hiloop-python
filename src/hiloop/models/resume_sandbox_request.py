@@ -16,19 +16,28 @@ class ResumeSandboxRequest:
     """
     Attributes:
         id (str | Unset):
+        fresh_workspace (bool | Unset): Accept a fresh, empty workspace only when no sealed filesystem continuation
+            exists (for
+             example, an ephemeral scratch sandbox). Without this, such a resume fails instead of silently
+             provisioning a blank workspace. Has no effect when an exact BranchFS continuation exists.
     """
 
     id: str | Unset = UNSET
+    fresh_workspace: bool | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         id = self.id
+
+        fresh_workspace = self.fresh_workspace
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if id is not UNSET:
             field_dict["id"] = id
+        if fresh_workspace is not UNSET:
+            field_dict["fresh_workspace"] = fresh_workspace
 
         return field_dict
 
@@ -37,8 +46,11 @@ class ResumeSandboxRequest:
         d = dict(src_dict)
         id = d.pop("id", UNSET)
 
+        fresh_workspace = d.pop("fresh_workspace", UNSET)
+
         resume_sandbox_request = cls(
             id=id,
+            fresh_workspace=fresh_workspace,
         )
 
         resume_sandbox_request.additional_properties = d

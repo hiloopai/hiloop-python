@@ -18,17 +18,17 @@ class Principal:
 
        Attributes:
            kind (str | Unset): The kind of principal: "user" (a human identity), "service_account" (a machine credential
-                not bound to a user), or "agent" (a credential bound to a registered agent identity).
+                not bound to a user), or "workload" (a credential bound to a registered workload identity).
            id (str | Unset): The principal's stable id: the user's id for a user, the API key's id for a service account
-                or an agent.
-           email (str | Unset): The user's primary email. Empty for a service-account or agent principal.
+                or a workload.
+           email (str | Unset): The user's primary email. Empty for a service-account or workload principal.
            key_id (str | Unset): The presented API key's id. Empty for a browser-session login (no key is involved).
            key_name (str | Unset): The presented API key's name — how this principal is displayed in listings and
                attribution.
                 Empty for a browser-session login.
-           agent_name (str | Unset): The bound agent's registered name — how an agent principal is displayed in listings
-               and
-                attribution. Empty unless the presented credential is bound to a registered agent.
+           workload_name (str | Unset): The bound workload's registered name — how a workload principal is displayed in
+               listings and
+                attribution. Empty unless the presented credential is bound to a registered workload.
     """
 
     kind: str | Unset = UNSET
@@ -36,7 +36,7 @@ class Principal:
     email: str | Unset = UNSET
     key_id: str | Unset = UNSET
     key_name: str | Unset = UNSET
-    agent_name: str | Unset = UNSET
+    workload_name: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -50,7 +50,7 @@ class Principal:
 
         key_name = self.key_name
 
-        agent_name = self.agent_name
+        workload_name = self.workload_name
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -62,11 +62,11 @@ class Principal:
         if email is not UNSET:
             field_dict["email"] = email
         if key_id is not UNSET:
-            field_dict["keyId"] = key_id
+            field_dict["key_id"] = key_id
         if key_name is not UNSET:
-            field_dict["keyName"] = key_name
-        if agent_name is not UNSET:
-            field_dict["agentName"] = agent_name
+            field_dict["key_name"] = key_name
+        if workload_name is not UNSET:
+            field_dict["workload_name"] = workload_name
 
         return field_dict
 
@@ -79,11 +79,11 @@ class Principal:
 
         email = d.pop("email", UNSET)
 
-        key_id = d.pop("keyId", UNSET)
+        key_id = d.pop("key_id", UNSET)
 
-        key_name = d.pop("keyName", UNSET)
+        key_name = d.pop("key_name", UNSET)
 
-        agent_name = d.pop("agentName", UNSET)
+        workload_name = d.pop("workload_name", UNSET)
 
         principal = cls(
             kind=kind,
@@ -91,7 +91,7 @@ class Principal:
             email=email,
             key_id=key_id,
             key_name=key_name,
-            agent_name=agent_name,
+            workload_name=workload_name,
         )
 
         principal.additional_properties = d

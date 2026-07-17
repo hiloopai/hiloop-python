@@ -17,13 +17,14 @@ T = TypeVar("T", bound="StartExecutionRequest")
 
 @_attrs_define
 class StartExecutionRequest:
-    """Start an interactive command execution that can be streamed and driven over time.
+    """Retired provider-interactive compatibility request. Clean sandbox-cell deployments return
+    unsupported; use ExecuteSandbox for durable shared-queue commands or managed SSH for a terminal.
 
-    Attributes:
-        sandbox_id (str | Unset):
-        command (CommandSpec | Unset):
-        stdin (str | Unset): Optional bytes written to the process's standard input at start.
-        pty (bool | Unset): Allocate a pseudo-terminal for the execution.
+       Attributes:
+           sandbox_id (str | Unset):
+           command (CommandSpec | Unset):
+           stdin (str | Unset): Optional bytes written to the process's standard input at start.
+           pty (bool | Unset): Allocate a pseudo-terminal for the execution.
     """
 
     sandbox_id: str | Unset = UNSET
@@ -47,7 +48,7 @@ class StartExecutionRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if sandbox_id is not UNSET:
-            field_dict["sandboxId"] = sandbox_id
+            field_dict["sandbox_id"] = sandbox_id
         if command is not UNSET:
             field_dict["command"] = command
         if stdin is not UNSET:
@@ -62,7 +63,7 @@ class StartExecutionRequest:
         from ..models.command_spec import CommandSpec
 
         d = dict(src_dict)
-        sandbox_id = d.pop("sandboxId", UNSET)
+        sandbox_id = d.pop("sandbox_id", UNSET)
 
         _command = d.pop("command", UNSET)
         command: CommandSpec | Unset

@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.fork_sandbox_request import ForkSandboxRequest
 from ...models.fork_sandbox_response import ForkSandboxResponse
 from ...types import UNSET, Response, Unset
@@ -36,19 +36,41 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ForkSandboxResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorBody | ForkSandboxResponse | None:
     if response.status_code == 200:
         response_200 = ForkSandboxResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ForkSandboxResponse]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorBody | ForkSandboxResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,19 +85,21 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: ForkSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[ForkSandboxResponse]:
-    """
+) -> Response[ErrorBody | ForkSandboxResponse]:
+    """Retired fork compatibility RPC. Clean sandbox-cell deployments return unsupported.
+
     Args:
         source_sandbox_id (str):
         idempotency_key (str | Unset):
-        body (ForkSandboxRequest):
+        body (ForkSandboxRequest): Retired fork compatibility request. Clean sandbox-cell
+            deployments return unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ForkSandboxResponse]
+        Response[ErrorBody | ForkSandboxResponse]
     """
 
     kwargs = _get_kwargs(
@@ -97,19 +121,21 @@ def sync(
     client: AuthenticatedClient | Client,
     body: ForkSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> ForkSandboxResponse | None:
-    """
+) -> ErrorBody | ForkSandboxResponse | None:
+    """Retired fork compatibility RPC. Clean sandbox-cell deployments return unsupported.
+
     Args:
         source_sandbox_id (str):
         idempotency_key (str | Unset):
-        body (ForkSandboxRequest):
+        body (ForkSandboxRequest): Retired fork compatibility request. Clean sandbox-cell
+            deployments return unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ForkSandboxResponse
+        ErrorBody | ForkSandboxResponse
     """
 
     return sync_detailed(
@@ -126,19 +152,21 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: ForkSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[ForkSandboxResponse]:
-    """
+) -> Response[ErrorBody | ForkSandboxResponse]:
+    """Retired fork compatibility RPC. Clean sandbox-cell deployments return unsupported.
+
     Args:
         source_sandbox_id (str):
         idempotency_key (str | Unset):
-        body (ForkSandboxRequest):
+        body (ForkSandboxRequest): Retired fork compatibility request. Clean sandbox-cell
+            deployments return unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ForkSandboxResponse]
+        Response[ErrorBody | ForkSandboxResponse]
     """
 
     kwargs = _get_kwargs(
@@ -158,19 +186,21 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: ForkSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> ForkSandboxResponse | None:
-    """
+) -> ErrorBody | ForkSandboxResponse | None:
+    """Retired fork compatibility RPC. Clean sandbox-cell deployments return unsupported.
+
     Args:
         source_sandbox_id (str):
         idempotency_key (str | Unset):
-        body (ForkSandboxRequest):
+        body (ForkSandboxRequest): Retired fork compatibility request. Clean sandbox-cell
+            deployments return unsupported.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ForkSandboxResponse
+        ErrorBody | ForkSandboxResponse
     """
 
     return (

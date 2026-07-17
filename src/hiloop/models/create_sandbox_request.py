@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.create_sandbox_request_network_mode import CreateSandboxRequestNetworkMode
 from ..types import UNSET, Unset
 
 if TYPE_CHECKING:
@@ -18,6 +19,8 @@ if TYPE_CHECKING:
     from ..models.resource_spec import ResourceSpec
     from ..models.sandbox_image import SandboxImage
     from ..models.secret_binding import SecretBinding
+    from ..models.volume_mount import VolumeMount
+    from ..models.workspace_revision_mount import WorkspaceRevisionMount
 
 
 T = TypeVar("T", bound="CreateSandboxRequest")
@@ -29,8 +32,11 @@ class CreateSandboxRequest:
     Attributes:
         project_id (str | Unset):
         name (str | Unset): An optional display name for the sandbox. When empty the server generates one. Names are not
-             unique; the id returned in the response is the canonical handle.
-        image (SandboxImage | Unset):
+             unique; the id returned in the response is the canonical handle. The run created with the
+             sandbox takes this name as its label, so naming the sandbox names its run tree's root.
+        image (SandboxImage | Unset): Explicit immutable environment selection. A create must name a deployment profile
+            or exact OCI
+             environment; omitting the image does not select a provider default.
         resources (ResourceSpec | Unset):
         requested_capabilities (list[CapabilityRequirement] | Unset):
         labels (CreateSandboxRequestLabels | Unset):
@@ -39,18 +45,34 @@ class CreateSandboxRequest:
             EGRESS_MODE_UNSPECIFIED leaves
              outbound traffic unbounded (the default-allow behavior). Enforced at the strongest layer the
              runtime supports.
-        secrets (list[SecretBinding] | Unset): Secret bindings injected into matching outbound requests. Empty injects
-            nothing.
+        secrets (list[SecretBinding] | Unset): Declared secret bindings. Non-empty requests require native injection and
+            currently fail closed.
         lifecycle (LifecycleSpec | Unset): Sandbox lifecycle policy: two independent clocks, matching how the completion
             sweep and the
              lifetime reaper enforce them. This intentionally exposes only the two expiry controls needed by
-             public callers; process defaults, mounts, environment, and user remain server-managed in the first
-             runtime slice.
+             public callers; process defaults, environment, and user remain server-managed.
         description (str | Unset): User-assigned free-text description. Empty leaves the sandbox undescribed.
         command (CommandSpec | Unset):
         delete_on_exit (bool | Unset): One-shot mode only: delete the sandbox on command exit instead of stopping it.
-            The run and its
-             captured events persist either way.
+            The run and
+             execution records persist either way.
+        execute_as_workload (str | Unset): Optional registered workload name to run the sandbox as. When set, the
+            sandbox is
+             workload-classed: its work is attributed to that workload, its managed credential is bound to the
+             workload on the caller's behalf, and any identity-bound egress policy for that workload applies
+             (the caller must hold launch rights on it and the name must be registered). When empty, the
+             sandbox executes as the caller's own identity. The executing identity is always declared here,
+             never inferred.
+        volume_mounts (list[VolumeMount] | Unset): Retired volume-compatibility field. Clean sandbox-cell deployments
+            reject non-empty volume
+             mounts; attach an exact BranchFS workspace revision instead.
+        network_mode (CreateSandboxRequestNetworkMode | Unset): Network dataplane mode for the sandbox. Omitted or
+            NETWORK_MODE_UNSPECIFIED keeps the
+             default (NETWORK_MODE_NONE).
+        workspace (WorkspaceRevisionMount | Unset): One writable, copy-on-write BranchFS workspace mounted into a
+            sandbox. The tenant comes only
+             from the authenticated request scope and is never caller-supplied. Node paths, sockets, writer
+             fences, and backend handles remain internal to the selected cell.
     """
 
     project_id: str | Unset = UNSET
@@ -66,6 +88,10 @@ class CreateSandboxRequest:
     description: str | Unset = UNSET
     command: CommandSpec | Unset = UNSET
     delete_on_exit: bool | Unset = UNSET
+    execute_as_workload: str | Unset = UNSET
+    volume_mounts: list[VolumeMount] | Unset = UNSET
+    network_mode: CreateSandboxRequestNetworkMode | Unset = UNSET
+    workspace: WorkspaceRevisionMount | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -119,11 +145,28 @@ class CreateSandboxRequest:
 
         delete_on_exit = self.delete_on_exit
 
+        execute_as_workload = self.execute_as_workload
+
+        volume_mounts: list[dict[str, Any]] | Unset = UNSET
+        if not isinstance(self.volume_mounts, Unset):
+            volume_mounts = []
+            for volume_mounts_item_data in self.volume_mounts:
+                volume_mounts_item = volume_mounts_item_data.to_dict()
+                volume_mounts.append(volume_mounts_item)
+
+        network_mode: str | Unset = UNSET
+        if not isinstance(self.network_mode, Unset):
+            network_mode = self.network_mode.value
+
+        workspace: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.workspace, Unset):
+            workspace = self.workspace.to_dict()
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if project_id is not UNSET:
-            field_dict["projectId"] = project_id
+            field_dict["project_id"] = project_id
         if name is not UNSET:
             field_dict["name"] = name
         if image is not UNSET:
@@ -131,7 +174,7 @@ class CreateSandboxRequest:
         if resources is not UNSET:
             field_dict["resources"] = resources
         if requested_capabilities is not UNSET:
-            field_dict["requestedCapabilities"] = requested_capabilities
+            field_dict["requested_capabilities"] = requested_capabilities
         if labels is not UNSET:
             field_dict["labels"] = labels
         if capture is not UNSET:
@@ -147,7 +190,15 @@ class CreateSandboxRequest:
         if command is not UNSET:
             field_dict["command"] = command
         if delete_on_exit is not UNSET:
-            field_dict["deleteOnExit"] = delete_on_exit
+            field_dict["delete_on_exit"] = delete_on_exit
+        if execute_as_workload is not UNSET:
+            field_dict["execute_as_workload"] = execute_as_workload
+        if volume_mounts is not UNSET:
+            field_dict["volume_mounts"] = volume_mounts
+        if network_mode is not UNSET:
+            field_dict["network_mode"] = network_mode
+        if workspace is not UNSET:
+            field_dict["workspace"] = workspace
 
         return field_dict
 
@@ -162,9 +213,11 @@ class CreateSandboxRequest:
         from ..models.resource_spec import ResourceSpec
         from ..models.sandbox_image import SandboxImage
         from ..models.secret_binding import SecretBinding
+        from ..models.volume_mount import VolumeMount
+        from ..models.workspace_revision_mount import WorkspaceRevisionMount
 
         d = dict(src_dict)
-        project_id = d.pop("projectId", UNSET)
+        project_id = d.pop("project_id", UNSET)
 
         name = d.pop("name", UNSET)
 
@@ -182,7 +235,7 @@ class CreateSandboxRequest:
         else:
             resources = ResourceSpec.from_dict(_resources)
 
-        _requested_capabilities = d.pop("requestedCapabilities", UNSET)
+        _requested_capabilities = d.pop("requested_capabilities", UNSET)
         requested_capabilities: list[CapabilityRequirement] | Unset = UNSET
         if _requested_capabilities is not UNSET:
             requested_capabilities = []
@@ -237,7 +290,32 @@ class CreateSandboxRequest:
         else:
             command = CommandSpec.from_dict(_command)
 
-        delete_on_exit = d.pop("deleteOnExit", UNSET)
+        delete_on_exit = d.pop("delete_on_exit", UNSET)
+
+        execute_as_workload = d.pop("execute_as_workload", UNSET)
+
+        _volume_mounts = d.pop("volume_mounts", UNSET)
+        volume_mounts: list[VolumeMount] | Unset = UNSET
+        if _volume_mounts is not UNSET:
+            volume_mounts = []
+            for volume_mounts_item_data in _volume_mounts:
+                volume_mounts_item = VolumeMount.from_dict(volume_mounts_item_data)
+
+                volume_mounts.append(volume_mounts_item)
+
+        _network_mode = d.pop("network_mode", UNSET)
+        network_mode: CreateSandboxRequestNetworkMode | Unset
+        if isinstance(_network_mode, Unset):
+            network_mode = UNSET
+        else:
+            network_mode = CreateSandboxRequestNetworkMode(_network_mode)
+
+        _workspace = d.pop("workspace", UNSET)
+        workspace: WorkspaceRevisionMount | Unset
+        if isinstance(_workspace, Unset):
+            workspace = UNSET
+        else:
+            workspace = WorkspaceRevisionMount.from_dict(_workspace)
 
         create_sandbox_request = cls(
             project_id=project_id,
@@ -253,6 +331,10 @@ class CreateSandboxRequest:
             description=description,
             command=command,
             delete_on_exit=delete_on_exit,
+            execute_as_workload=execute_as_workload,
+            volume_mounts=volume_mounts,
+            network_mode=network_mode,
+            workspace=workspace,
         )
 
         create_sandbox_request.additional_properties = d

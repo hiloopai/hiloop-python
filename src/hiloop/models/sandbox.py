@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 from ..types import UNSET, Unset
+
+if TYPE_CHECKING:
+    from ..models.sandbox_failure import SandboxFailure
+
 
 T = TypeVar("T", bound="Sandbox")
 
@@ -34,7 +38,7 @@ class Sandbox:
         created_at (str | Unset): When the sandbox was created (RFC 3339).
         updated_at (str | Unset): When the sandbox record was last updated (RFC 3339). Equal to created_at until the
             first update.
-        gpus (str | Unset): Accelerators requested by the sandbox's spec. Zero when none were requested.
+        failure (SandboxFailure | Unset): Why a sandbox is in the failed observed state.
     """
 
     id: str | Unset = UNSET
@@ -50,7 +54,7 @@ class Sandbox:
     created_by: str | Unset = UNSET
     created_at: str | Unset = UNSET
     updated_at: str | Unset = UNSET
-    gpus: str | Unset = UNSET
+    failure: SandboxFailure | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -80,7 +84,9 @@ class Sandbox:
 
         updated_at = self.updated_at
 
-        gpus = self.gpus
+        failure: dict[str, Any] | Unset = UNSET
+        if not isinstance(self.failure, Unset):
+            failure = self.failure.to_dict()
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
@@ -88,64 +94,71 @@ class Sandbox:
         if id is not UNSET:
             field_dict["id"] = id
         if tenant_id is not UNSET:
-            field_dict["tenantId"] = tenant_id
+            field_dict["tenant_id"] = tenant_id
         if project_id is not UNSET:
-            field_dict["projectId"] = project_id
+            field_dict["project_id"] = project_id
         if name is not UNSET:
             field_dict["name"] = name
         if desired_state is not UNSET:
-            field_dict["desiredState"] = desired_state
+            field_dict["desired_state"] = desired_state
         if observed_state is not UNSET:
-            field_dict["observedState"] = observed_state
+            field_dict["observed_state"] = observed_state
         if active_generation is not UNSET:
-            field_dict["activeGeneration"] = active_generation
+            field_dict["active_generation"] = active_generation
         if version is not UNSET:
             field_dict["version"] = version
         if run_id is not UNSET:
-            field_dict["runId"] = run_id
+            field_dict["run_id"] = run_id
         if description is not UNSET:
             field_dict["description"] = description
         if created_by is not UNSET:
-            field_dict["createdBy"] = created_by
+            field_dict["created_by"] = created_by
         if created_at is not UNSET:
-            field_dict["createdAt"] = created_at
+            field_dict["created_at"] = created_at
         if updated_at is not UNSET:
-            field_dict["updatedAt"] = updated_at
-        if gpus is not UNSET:
-            field_dict["gpus"] = gpus
+            field_dict["updated_at"] = updated_at
+        if failure is not UNSET:
+            field_dict["failure"] = failure
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
+        from ..models.sandbox_failure import SandboxFailure
+
         d = dict(src_dict)
         id = d.pop("id", UNSET)
 
-        tenant_id = d.pop("tenantId", UNSET)
+        tenant_id = d.pop("tenant_id", UNSET)
 
-        project_id = d.pop("projectId", UNSET)
+        project_id = d.pop("project_id", UNSET)
 
         name = d.pop("name", UNSET)
 
-        desired_state = d.pop("desiredState", UNSET)
+        desired_state = d.pop("desired_state", UNSET)
 
-        observed_state = d.pop("observedState", UNSET)
+        observed_state = d.pop("observed_state", UNSET)
 
-        active_generation = d.pop("activeGeneration", UNSET)
+        active_generation = d.pop("active_generation", UNSET)
 
         version = d.pop("version", UNSET)
 
-        run_id = d.pop("runId", UNSET)
+        run_id = d.pop("run_id", UNSET)
 
         description = d.pop("description", UNSET)
 
-        created_by = d.pop("createdBy", UNSET)
+        created_by = d.pop("created_by", UNSET)
 
-        created_at = d.pop("createdAt", UNSET)
+        created_at = d.pop("created_at", UNSET)
 
-        updated_at = d.pop("updatedAt", UNSET)
+        updated_at = d.pop("updated_at", UNSET)
 
-        gpus = d.pop("gpus", UNSET)
+        _failure = d.pop("failure", UNSET)
+        failure: SandboxFailure | Unset
+        if isinstance(_failure, Unset):
+            failure = UNSET
+        else:
+            failure = SandboxFailure.from_dict(_failure)
 
         sandbox = cls(
             id=id,
@@ -161,7 +174,7 @@ class Sandbox:
             created_by=created_by,
             created_at=created_at,
             updated_at=updated_at,
-            gpus=gpus,
+            failure=failure,
         )
 
         sandbox.additional_properties = d

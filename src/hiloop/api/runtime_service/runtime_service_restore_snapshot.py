@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.restore_snapshot_request import RestoreSnapshotRequest
 from ...models.restore_snapshot_response import RestoreSnapshotResponse
 from ...types import UNSET, Response, Unset
@@ -38,21 +38,39 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> RestoreSnapshotResponse | None:
+) -> ErrorBody | RestoreSnapshotResponse | None:
     if response.status_code == 200:
         response_200 = RestoreSnapshotResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[RestoreSnapshotResponse]:
+) -> Response[ErrorBody | RestoreSnapshotResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -67,23 +85,24 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[RestoreSnapshotResponse]:
-    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
-     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
-     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
-     sandbox extends the source's run lineage.
+) -> Response[ErrorBody | RestoreSnapshotResponse]:
+    """Retired snapshot-restore compatibility RPC. Clean sandbox-cell deployments return unsupported;
+     resume an exact sealed BranchFS workspace into a fresh runtime generation instead.
 
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):
-        body (RestoreSnapshotRequest):
+        body (RestoreSnapshotRequest): Retired snapshot-restore compatibility request. Clean
+            sandbox-cell deployments return
+             unsupported; resume an exact sealed BranchFS workspace into a fresh runtime generation
+            instead.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[RestoreSnapshotResponse]
+        Response[ErrorBody | RestoreSnapshotResponse]
     """
 
     kwargs = _get_kwargs(
@@ -105,23 +124,24 @@ def sync(
     client: AuthenticatedClient | Client,
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> RestoreSnapshotResponse | None:
-    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
-     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
-     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
-     sandbox extends the source's run lineage.
+) -> ErrorBody | RestoreSnapshotResponse | None:
+    """Retired snapshot-restore compatibility RPC. Clean sandbox-cell deployments return unsupported;
+     resume an exact sealed BranchFS workspace into a fresh runtime generation instead.
 
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):
-        body (RestoreSnapshotRequest):
+        body (RestoreSnapshotRequest): Retired snapshot-restore compatibility request. Clean
+            sandbox-cell deployments return
+             unsupported; resume an exact sealed BranchFS workspace into a fresh runtime generation
+            instead.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        RestoreSnapshotResponse
+        ErrorBody | RestoreSnapshotResponse
     """
 
     return sync_detailed(
@@ -138,23 +158,24 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[RestoreSnapshotResponse]:
-    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
-     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
-     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
-     sandbox extends the source's run lineage.
+) -> Response[ErrorBody | RestoreSnapshotResponse]:
+    """Retired snapshot-restore compatibility RPC. Clean sandbox-cell deployments return unsupported;
+     resume an exact sealed BranchFS workspace into a fresh runtime generation instead.
 
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):
-        body (RestoreSnapshotRequest):
+        body (RestoreSnapshotRequest): Retired snapshot-restore compatibility request. Clean
+            sandbox-cell deployments return
+             unsupported; resume an exact sealed BranchFS workspace into a fresh runtime generation
+            instead.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[RestoreSnapshotResponse]
+        Response[ErrorBody | RestoreSnapshotResponse]
     """
 
     kwargs = _get_kwargs(
@@ -174,23 +195,24 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: RestoreSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> RestoreSnapshotResponse | None:
-    """Create a new sandbox from a snapshot — fork-from-snapshot. The source sandbox may be stopped
-     or deleted; only the snapshot must be ready. A snapshot that records its source run mints the
-     new sandbox's run as a child branched at the snapshot's recorded anchor, so the restored
-     sandbox extends the source's run lineage.
+) -> ErrorBody | RestoreSnapshotResponse | None:
+    """Retired snapshot-restore compatibility RPC. Clean sandbox-cell deployments return unsupported;
+     resume an exact sealed BranchFS workspace into a fresh runtime generation instead.
 
     Args:
         snapshot_id (str):
         idempotency_key (str | Unset):
-        body (RestoreSnapshotRequest):
+        body (RestoreSnapshotRequest): Retired snapshot-restore compatibility request. Clean
+            sandbox-cell deployments return
+             unsupported; resume an exact sealed BranchFS workspace into a fresh runtime generation
+            instead.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        RestoreSnapshotResponse
+        ErrorBody | RestoreSnapshotResponse
     """
 
     return (

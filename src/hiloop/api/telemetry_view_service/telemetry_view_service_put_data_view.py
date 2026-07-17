@@ -4,9 +4,9 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.data_view import DataView
+from ...models.error_body import ErrorBody
 from ...models.put_data_view_request import PutDataViewRequest
 from ...types import Response
 
@@ -33,19 +33,39 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> DataView | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> DataView | ErrorBody | None:
     if response.status_code == 200:
         response_200 = DataView.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[DataView]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[DataView | ErrorBody]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -59,7 +79,7 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
-) -> Response[DataView]:
+) -> Response[DataView | ErrorBody]:
     """Create or replace a data view (compile-validated before store).
 
     Args:
@@ -73,7 +93,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[DataView]
+        Response[DataView | ErrorBody]
     """
 
     kwargs = _get_kwargs(
@@ -93,7 +113,7 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
-) -> DataView | None:
+) -> DataView | ErrorBody | None:
     """Create or replace a data view (compile-validated before store).
 
     Args:
@@ -107,7 +127,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        DataView
+        DataView | ErrorBody
     """
 
     return sync_detailed(
@@ -122,7 +142,7 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
-) -> Response[DataView]:
+) -> Response[DataView | ErrorBody]:
     """Create or replace a data view (compile-validated before store).
 
     Args:
@@ -136,7 +156,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[DataView]
+        Response[DataView | ErrorBody]
     """
 
     kwargs = _get_kwargs(
@@ -154,7 +174,7 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: PutDataViewRequest,
-) -> DataView | None:
+) -> DataView | ErrorBody | None:
     """Create or replace a data view (compile-validated before store).
 
     Args:
@@ -168,7 +188,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        DataView
+        DataView | ErrorBody
     """
 
     return (

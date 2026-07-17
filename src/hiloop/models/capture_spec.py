@@ -16,9 +16,9 @@ T = TypeVar("T", bound="CaptureSpec")
 class CaptureSpec:
     """
     Attributes:
-        policy (CaptureSpecPolicy | Unset): REST-safe capture policy. Use CAPTURE_POLICY_DISABLED to run the sandbox
-            with no capture
-             instrumentation; omitted or CAPTURE_POLICY_UNSPECIFIED defaults to enabled.
+        policy (CaptureSpecPolicy | Unset): REST-safe capture policy. Omitted or CAPTURE_POLICY_UNSPECIFIED defaults to
+            disabled. Enabling
+             capture requires a runtime lane with native capture support.
     """
 
     policy: CaptureSpecPolicy | Unset = UNSET

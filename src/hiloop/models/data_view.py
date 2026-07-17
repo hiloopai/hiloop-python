@@ -58,7 +58,7 @@ class DataView:
         if spec is not UNSET:
             field_dict["spec"] = spec
         if spec_version is not UNSET:
-            field_dict["specVersion"] = spec_version
+            field_dict["spec_version"] = spec_version
 
         return field_dict
 
@@ -78,7 +78,7 @@ class DataView:
         else:
             spec = DataViewSpec.from_dict(_spec)
 
-        spec_version = d.pop("specVersion", UNSET)
+        spec_version = d.pop("spec_version", UNSET)
 
         data_view = cls(
             name=name,

@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.execute_sandbox_request import ExecuteSandboxRequest
 from ...models.execute_sandbox_response import ExecuteSandboxResponse
 from ...types import UNSET, Response, Unset
@@ -36,21 +36,41 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ExecuteSandboxResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> ErrorBody | ExecuteSandboxResponse | None:
     if response.status_code == 200:
         response_200 = ExecuteSandboxResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ExecuteSandboxResponse]:
+) -> Response[ErrorBody | ExecuteSandboxResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -65,8 +85,10 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: ExecuteSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[ExecuteSandboxResponse]:
-    """
+) -> Response[ErrorBody | ExecuteSandboxResponse]:
+    """Submit one bounded command through the durable shared execution queue. The operation and
+     execution records remain the source of truth; bounded stdout and stderr are stored as artifacts.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
@@ -77,7 +99,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ExecuteSandboxResponse]
+        Response[ErrorBody | ExecuteSandboxResponse]
     """
 
     kwargs = _get_kwargs(
@@ -99,8 +121,10 @@ def sync(
     client: AuthenticatedClient | Client,
     body: ExecuteSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> ExecuteSandboxResponse | None:
-    """
+) -> ErrorBody | ExecuteSandboxResponse | None:
+    """Submit one bounded command through the durable shared execution queue. The operation and
+     execution records remain the source of truth; bounded stdout and stderr are stored as artifacts.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
@@ -111,7 +135,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ExecuteSandboxResponse
+        ErrorBody | ExecuteSandboxResponse
     """
 
     return sync_detailed(
@@ -128,8 +152,10 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: ExecuteSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[ExecuteSandboxResponse]:
-    """
+) -> Response[ErrorBody | ExecuteSandboxResponse]:
+    """Submit one bounded command through the durable shared execution queue. The operation and
+     execution records remain the source of truth; bounded stdout and stderr are stored as artifacts.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
@@ -140,7 +166,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ExecuteSandboxResponse]
+        Response[ErrorBody | ExecuteSandboxResponse]
     """
 
     kwargs = _get_kwargs(
@@ -160,8 +186,10 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: ExecuteSandboxRequest,
     idempotency_key: str | Unset = UNSET,
-) -> ExecuteSandboxResponse | None:
-    """
+) -> ErrorBody | ExecuteSandboxResponse | None:
+    """Submit one bounded command through the durable shared execution queue. The operation and
+     execution records remain the source of truth; bounded stdout and stderr are stored as artifacts.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
@@ -172,7 +200,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ExecuteSandboxResponse
+        ErrorBody | ExecuteSandboxResponse
     """
 
     return (

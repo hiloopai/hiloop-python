@@ -25,9 +25,6 @@ class SandboxDescribe:
            image_reference (str | Unset): The container image reference the sandbox's spec pinned, when it names one.
            image_digest (str | Unset): The image content digest, when known.
            requested_resources (ResourceSpec | Unset):
-           requested_gpus (str | Unset): Accelerator count the sandbox's spec requested. Zero when none.
-           accelerator_model (str | Unset): Requested accelerator model (e.g. "b200"). Empty when no accelerator was
-               requested.
            state_since (str | Unset): When the current observed state began (RFC 3339): the completion time of the last
                succeeded
                 state-changing operation, or the creation time before any state change.
@@ -39,18 +36,20 @@ class SandboxDescribe:
            branch_event_id (str | Unset): The parent event the sandbox's run branched at. Empty for a tree root or no run.
            recent_operations (list[SandboxOperationSummary] | Unset): The sandbox's most recent operations, newest first
                (capped by the server).
+           resolved_accelerator_model (str | Unset): Accelerator model selected from requested_resources.gpus.models at
+               admission. Empty when the
+                sandbox requested no accelerator.
     """
 
     image_reference: str | Unset = UNSET
     image_digest: str | Unset = UNSET
     requested_resources: ResourceSpec | Unset = UNSET
-    requested_gpus: str | Unset = UNSET
-    accelerator_model: str | Unset = UNSET
     state_since: str | Unset = UNSET
     lease_expires_at: str | Unset = UNSET
     lineage_path: str | Unset = UNSET
     branch_event_id: str | Unset = UNSET
     recent_operations: list[SandboxOperationSummary] | Unset = UNSET
+    resolved_accelerator_model: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -61,10 +60,6 @@ class SandboxDescribe:
         requested_resources: dict[str, Any] | Unset = UNSET
         if not isinstance(self.requested_resources, Unset):
             requested_resources = self.requested_resources.to_dict()
-
-        requested_gpus = self.requested_gpus
-
-        accelerator_model = self.accelerator_model
 
         state_since = self.state_since
 
@@ -81,29 +76,29 @@ class SandboxDescribe:
                 recent_operations_item = recent_operations_item_data.to_dict()
                 recent_operations.append(recent_operations_item)
 
+        resolved_accelerator_model = self.resolved_accelerator_model
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if image_reference is not UNSET:
-            field_dict["imageReference"] = image_reference
+            field_dict["image_reference"] = image_reference
         if image_digest is not UNSET:
-            field_dict["imageDigest"] = image_digest
+            field_dict["image_digest"] = image_digest
         if requested_resources is not UNSET:
-            field_dict["requestedResources"] = requested_resources
-        if requested_gpus is not UNSET:
-            field_dict["requestedGpus"] = requested_gpus
-        if accelerator_model is not UNSET:
-            field_dict["acceleratorModel"] = accelerator_model
+            field_dict["requested_resources"] = requested_resources
         if state_since is not UNSET:
-            field_dict["stateSince"] = state_since
+            field_dict["state_since"] = state_since
         if lease_expires_at is not UNSET:
-            field_dict["leaseExpiresAt"] = lease_expires_at
+            field_dict["lease_expires_at"] = lease_expires_at
         if lineage_path is not UNSET:
-            field_dict["lineagePath"] = lineage_path
+            field_dict["lineage_path"] = lineage_path
         if branch_event_id is not UNSET:
-            field_dict["branchEventId"] = branch_event_id
+            field_dict["branch_event_id"] = branch_event_id
         if recent_operations is not UNSET:
-            field_dict["recentOperations"] = recent_operations
+            field_dict["recent_operations"] = recent_operations
+        if resolved_accelerator_model is not UNSET:
+            field_dict["resolved_accelerator_model"] = resolved_accelerator_model
 
         return field_dict
 
@@ -113,30 +108,26 @@ class SandboxDescribe:
         from ..models.sandbox_operation_summary import SandboxOperationSummary
 
         d = dict(src_dict)
-        image_reference = d.pop("imageReference", UNSET)
+        image_reference = d.pop("image_reference", UNSET)
 
-        image_digest = d.pop("imageDigest", UNSET)
+        image_digest = d.pop("image_digest", UNSET)
 
-        _requested_resources = d.pop("requestedResources", UNSET)
+        _requested_resources = d.pop("requested_resources", UNSET)
         requested_resources: ResourceSpec | Unset
         if isinstance(_requested_resources, Unset):
             requested_resources = UNSET
         else:
             requested_resources = ResourceSpec.from_dict(_requested_resources)
 
-        requested_gpus = d.pop("requestedGpus", UNSET)
+        state_since = d.pop("state_since", UNSET)
 
-        accelerator_model = d.pop("acceleratorModel", UNSET)
+        lease_expires_at = d.pop("lease_expires_at", UNSET)
 
-        state_since = d.pop("stateSince", UNSET)
+        lineage_path = d.pop("lineage_path", UNSET)
 
-        lease_expires_at = d.pop("leaseExpiresAt", UNSET)
+        branch_event_id = d.pop("branch_event_id", UNSET)
 
-        lineage_path = d.pop("lineagePath", UNSET)
-
-        branch_event_id = d.pop("branchEventId", UNSET)
-
-        _recent_operations = d.pop("recentOperations", UNSET)
+        _recent_operations = d.pop("recent_operations", UNSET)
         recent_operations: list[SandboxOperationSummary] | Unset = UNSET
         if _recent_operations is not UNSET:
             recent_operations = []
@@ -145,17 +136,18 @@ class SandboxDescribe:
 
                 recent_operations.append(recent_operations_item)
 
+        resolved_accelerator_model = d.pop("resolved_accelerator_model", UNSET)
+
         sandbox_describe = cls(
             image_reference=image_reference,
             image_digest=image_digest,
             requested_resources=requested_resources,
-            requested_gpus=requested_gpus,
-            accelerator_model=accelerator_model,
             state_since=state_since,
             lease_expires_at=lease_expires_at,
             lineage_path=lineage_path,
             branch_event_id=branch_event_id,
             recent_operations=recent_operations,
+            resolved_accelerator_model=resolved_accelerator_model,
         )
 
         sandbox_describe.additional_properties = d

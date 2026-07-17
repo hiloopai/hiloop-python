@@ -58,9 +58,9 @@ class CommandSpec:
         if env is not UNSET:
             field_dict["env"] = env
         if working_dir is not UNSET:
-            field_dict["workingDir"] = working_dir
+            field_dict["working_dir"] = working_dir
         if timeout_secs is not UNSET:
-            field_dict["timeoutSecs"] = timeout_secs
+            field_dict["timeout_secs"] = timeout_secs
 
         return field_dict
 
@@ -80,9 +80,9 @@ class CommandSpec:
         else:
             env = CommandSpecEnv.from_dict(_env)
 
-        working_dir = d.pop("workingDir", UNSET)
+        working_dir = d.pop("working_dir", UNSET)
 
-        timeout_secs = d.pop("timeoutSecs", UNSET)
+        timeout_secs = d.pop("timeout_secs", UNSET)
 
         command_spec = cls(
             program=program,

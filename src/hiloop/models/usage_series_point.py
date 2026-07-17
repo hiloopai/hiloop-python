@@ -46,30 +46,30 @@ class UsageSeriesPoint:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if bucket_start is not UNSET:
-            field_dict["bucketStart"] = bucket_start
+            field_dict["bucket_start"] = bucket_start
         if reserved_cpus is not UNSET:
-            field_dict["reservedCpus"] = reserved_cpus
+            field_dict["reserved_cpus"] = reserved_cpus
         if reserved_memory_mb is not UNSET:
-            field_dict["reservedMemoryMb"] = reserved_memory_mb
+            field_dict["reserved_memory_mb"] = reserved_memory_mb
         if reserved_gpus is not UNSET:
-            field_dict["reservedGpus"] = reserved_gpus
+            field_dict["reserved_gpus"] = reserved_gpus
         if reserved_disk_mb is not UNSET:
-            field_dict["reservedDiskMb"] = reserved_disk_mb
+            field_dict["reserved_disk_mb"] = reserved_disk_mb
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        bucket_start = d.pop("bucketStart", UNSET)
+        bucket_start = d.pop("bucket_start", UNSET)
 
-        reserved_cpus = d.pop("reservedCpus", UNSET)
+        reserved_cpus = d.pop("reserved_cpus", UNSET)
 
-        reserved_memory_mb = d.pop("reservedMemoryMb", UNSET)
+        reserved_memory_mb = d.pop("reserved_memory_mb", UNSET)
 
-        reserved_gpus = d.pop("reservedGpus", UNSET)
+        reserved_gpus = d.pop("reserved_gpus", UNSET)
 
-        reserved_disk_mb = d.pop("reservedDiskMb", UNSET)
+        reserved_disk_mb = d.pop("reserved_disk_mb", UNSET)
 
         usage_series_point = cls(
             bucket_start=bucket_start,

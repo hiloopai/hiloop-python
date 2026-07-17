@@ -14,12 +14,13 @@ T = TypeVar("T", bound="SendExecutionInputRequest")
 
 @_attrs_define
 class SendExecutionInputRequest:
-    """Deliver more input to a running execution: either standard input bytes or a control signal.
+    """Retired provider-interactive compatibility request. Clean sandbox-cell deployments return
+    unsupported.
 
-    Attributes:
-        execution_id (str | Unset):
-        stdin (str | Unset): Bytes appended to the process's standard input.
-        signal (SendExecutionInputRequestSignal | Unset): A control signal delivered to the process.
+       Attributes:
+           execution_id (str | Unset):
+           stdin (str | Unset): Bytes appended to the process's standard input.
+           signal (SendExecutionInputRequestSignal | Unset): A control signal delivered to the process.
     """
 
     execution_id: str | Unset = UNSET
@@ -40,7 +41,7 @@ class SendExecutionInputRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if execution_id is not UNSET:
-            field_dict["executionId"] = execution_id
+            field_dict["execution_id"] = execution_id
         if stdin is not UNSET:
             field_dict["stdin"] = stdin
         if signal is not UNSET:
@@ -51,7 +52,7 @@ class SendExecutionInputRequest:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        execution_id = d.pop("executionId", UNSET)
+        execution_id = d.pop("execution_id", UNSET)
 
         stdin = d.pop("stdin", UNSET)
 

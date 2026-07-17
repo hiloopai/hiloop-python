@@ -44,7 +44,7 @@ class ListProjectsResponse:
         if projects is not UNSET:
             field_dict["projects"] = projects
         if next_page_token is not UNSET:
-            field_dict["nextPageToken"] = next_page_token
+            field_dict["next_page_token"] = next_page_token
 
         return field_dict
 
@@ -62,7 +62,7 @@ class ListProjectsResponse:
 
                 projects.append(projects_item)
 
-        next_page_token = d.pop("nextPageToken", UNSET)
+        next_page_token = d.pop("next_page_token", UNSET)
 
         list_projects_response = cls(
             projects=projects,

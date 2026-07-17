@@ -4,10 +4,10 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_snapshot_request import CreateSnapshotRequest
 from ...models.create_snapshot_response import CreateSnapshotResponse
+from ...models.error_body import ErrorBody
 from ...types import UNSET, Response, Unset
 
 
@@ -36,21 +36,41 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> CreateSnapshotResponse | None:
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> CreateSnapshotResponse | ErrorBody | None:
     if response.status_code == 200:
         response_200 = CreateSnapshotResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[CreateSnapshotResponse]:
+) -> Response[CreateSnapshotResponse | ErrorBody]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -65,19 +85,23 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: CreateSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[CreateSnapshotResponse]:
-    """
+) -> Response[CreateSnapshotResponse | ErrorBody]:
+    """Retired snapshot compatibility RPC. Clean sandbox-cell deployments return unsupported; use a
+     BranchFS workspace plus stop/resume for filesystem continuity.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
-        body (CreateSnapshotRequest):
+        body (CreateSnapshotRequest): Retired snapshot compatibility request. Clean sandbox-cell
+            deployments return unsupported; use
+             a BranchFS workspace plus stop/resume for filesystem continuity.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[CreateSnapshotResponse]
+        Response[CreateSnapshotResponse | ErrorBody]
     """
 
     kwargs = _get_kwargs(
@@ -99,19 +123,23 @@ def sync(
     client: AuthenticatedClient | Client,
     body: CreateSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> CreateSnapshotResponse | None:
-    """
+) -> CreateSnapshotResponse | ErrorBody | None:
+    """Retired snapshot compatibility RPC. Clean sandbox-cell deployments return unsupported; use a
+     BranchFS workspace plus stop/resume for filesystem continuity.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
-        body (CreateSnapshotRequest):
+        body (CreateSnapshotRequest): Retired snapshot compatibility request. Clean sandbox-cell
+            deployments return unsupported; use
+             a BranchFS workspace plus stop/resume for filesystem continuity.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        CreateSnapshotResponse
+        CreateSnapshotResponse | ErrorBody
     """
 
     return sync_detailed(
@@ -128,19 +156,23 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: CreateSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> Response[CreateSnapshotResponse]:
-    """
+) -> Response[CreateSnapshotResponse | ErrorBody]:
+    """Retired snapshot compatibility RPC. Clean sandbox-cell deployments return unsupported; use a
+     BranchFS workspace plus stop/resume for filesystem continuity.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
-        body (CreateSnapshotRequest):
+        body (CreateSnapshotRequest): Retired snapshot compatibility request. Clean sandbox-cell
+            deployments return unsupported; use
+             a BranchFS workspace plus stop/resume for filesystem continuity.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[CreateSnapshotResponse]
+        Response[CreateSnapshotResponse | ErrorBody]
     """
 
     kwargs = _get_kwargs(
@@ -160,19 +192,23 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: CreateSnapshotRequest,
     idempotency_key: str | Unset = UNSET,
-) -> CreateSnapshotResponse | None:
-    """
+) -> CreateSnapshotResponse | ErrorBody | None:
+    """Retired snapshot compatibility RPC. Clean sandbox-cell deployments return unsupported; use a
+     BranchFS workspace plus stop/resume for filesystem continuity.
+
     Args:
         sandbox_id (str):
         idempotency_key (str | Unset):
-        body (CreateSnapshotRequest):
+        body (CreateSnapshotRequest): Retired snapshot compatibility request. Clean sandbox-cell
+            deployments return unsupported; use
+             a BranchFS workspace plus stop/resume for filesystem continuity.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        CreateSnapshotResponse
+        CreateSnapshotResponse | ErrorBody
     """
 
     return (

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -22,9 +22,13 @@ class BranchDiffResponse:
         rows (list[BranchDiffResponseRowsItem] | Unset): Events present in run A but not in run B, projected to the diff
             key columns (one flat JSON
              object per row, same canonical row encoding as QueryResponse).
+        columns (list[str] | Unset): The diff's declared column names, in projection order. Present even when a column
+            is NULL in
+             every row (per-row nulls are omitted).
     """
 
     rows: list[BranchDiffResponseRowsItem] | Unset = UNSET
+    columns: list[str] | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -35,11 +39,17 @@ class BranchDiffResponse:
                 rows_item = rows_item_data.to_dict()
                 rows.append(rows_item)
 
+        columns: list[str] | Unset = UNSET
+        if not isinstance(self.columns, Unset):
+            columns = self.columns
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if rows is not UNSET:
             field_dict["rows"] = rows
+        if columns is not UNSET:
+            field_dict["columns"] = columns
 
         return field_dict
 
@@ -57,8 +67,11 @@ class BranchDiffResponse:
 
                 rows.append(rows_item)
 
+        columns = cast(list[str], d.pop("columns", UNSET))
+
         branch_diff_response = cls(
             rows=rows,
+            columns=columns,
         )
 
         branch_diff_response.additional_properties = d

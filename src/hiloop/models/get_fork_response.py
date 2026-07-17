@@ -19,7 +19,9 @@ T = TypeVar("T", bound="GetForkResponse")
 class GetForkResponse:
     """
     Attributes:
-        fork (Fork | Unset):
+        fork (Fork | Unset): Retained wire type for retired fork compatibility RPCs. Clean sandbox-cell deployments do
+            not
+             create or return fork records.
     """
 
     fork: Fork | Unset = UNSET

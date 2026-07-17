@@ -55,11 +55,11 @@ class RegisterAnnotationSchemaRequest:
         if name is not UNSET:
             field_dict["name"] = name
         if json_schema is not UNSET:
-            field_dict["jsonSchema"] = json_schema
+            field_dict["json_schema"] = json_schema
         if description is not UNSET:
             field_dict["description"] = description
         if promoted_fields is not UNSET:
-            field_dict["promotedFields"] = promoted_fields
+            field_dict["promoted_fields"] = promoted_fields
 
         return field_dict
 
@@ -70,11 +70,11 @@ class RegisterAnnotationSchemaRequest:
         d = dict(src_dict)
         name = d.pop("name", UNSET)
 
-        json_schema = d.pop("jsonSchema", UNSET)
+        json_schema = d.pop("json_schema", UNSET)
 
         description = d.pop("description", UNSET)
 
-        _promoted_fields = d.pop("promotedFields", UNSET)
+        _promoted_fields = d.pop("promoted_fields", UNSET)
         promoted_fields: list[PromotedField] | Unset = UNSET
         if _promoted_fields is not UNSET:
             promoted_fields = []

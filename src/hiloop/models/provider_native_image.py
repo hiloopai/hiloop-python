@@ -13,7 +13,7 @@ T = TypeVar("T", bound="ProviderNativeImage")
 
 @_attrs_define
 class ProviderNativeImage:
-    """Opaque image reference interpreted by the selected runtime adapter.
+    """Explicit deployment-defined runtime profile reference. It is never a provider-default sentinel.
 
     Attributes:
         reference (str | Unset):

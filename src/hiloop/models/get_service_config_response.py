@@ -40,26 +40,26 @@ class GetServiceConfigResponse:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if telemetry_endpoint is not UNSET:
-            field_dict["telemetryEndpoint"] = telemetry_endpoint
+            field_dict["telemetry_endpoint"] = telemetry_endpoint
         if secret_broker_url is not UNSET:
-            field_dict["secretBrokerUrl"] = secret_broker_url
+            field_dict["secret_broker_url"] = secret_broker_url
         if login_url is not UNSET:
-            field_dict["loginUrl"] = login_url
+            field_dict["login_url"] = login_url
         if device_activation_url is not UNSET:
-            field_dict["deviceActivationUrl"] = device_activation_url
+            field_dict["device_activation_url"] = device_activation_url
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        telemetry_endpoint = d.pop("telemetryEndpoint", UNSET)
+        telemetry_endpoint = d.pop("telemetry_endpoint", UNSET)
 
-        secret_broker_url = d.pop("secretBrokerUrl", UNSET)
+        secret_broker_url = d.pop("secret_broker_url", UNSET)
 
-        login_url = d.pop("loginUrl", UNSET)
+        login_url = d.pop("login_url", UNSET)
 
-        device_activation_url = d.pop("deviceActivationUrl", UNSET)
+        device_activation_url = d.pop("device_activation_url", UNSET)
 
         get_service_config_response = cls(
             telemetry_endpoint=telemetry_endpoint,

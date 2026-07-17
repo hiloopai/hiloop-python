@@ -36,22 +36,22 @@ class FileToArtifactRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if sandbox_id is not UNSET:
-            field_dict["sandboxId"] = sandbox_id
+            field_dict["sandbox_id"] = sandbox_id
         if path is not UNSET:
             field_dict["path"] = path
         if media_type is not UNSET:
-            field_dict["mediaType"] = media_type
+            field_dict["media_type"] = media_type
 
         return field_dict
 
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        sandbox_id = d.pop("sandboxId", UNSET)
+        sandbox_id = d.pop("sandbox_id", UNSET)
 
         path = d.pop("path", UNSET)
 
-        media_type = d.pop("mediaType", UNSET)
+        media_type = d.pop("media_type", UNSET)
 
         file_to_artifact_request = cls(
             sandbox_id=sandbox_id,

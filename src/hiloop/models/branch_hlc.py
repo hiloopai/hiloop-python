@@ -33,7 +33,7 @@ class BranchHlc:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if wall_ns is not UNSET:
-            field_dict["wallNs"] = wall_ns
+            field_dict["wall_ns"] = wall_ns
         if logical is not UNSET:
             field_dict["logical"] = logical
 
@@ -42,7 +42,7 @@ class BranchHlc:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        wall_ns = d.pop("wallNs", UNSET)
+        wall_ns = d.pop("wall_ns", UNSET)
 
         logical = d.pop("logical", UNSET)
 

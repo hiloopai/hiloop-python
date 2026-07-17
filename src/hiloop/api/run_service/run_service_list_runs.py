@@ -3,8 +3,8 @@ from typing import Any
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.list_runs_response import ListRunsResponse
 from ...types import UNSET, Response, Unset
 
@@ -19,25 +19,28 @@ def _get_kwargs(
     created_before: str | Unset = UNSET,
     root_run_id: str | Unset = UNSET,
     project_id: str | Unset = UNSET,
+    executing_principal: str | Unset = UNSET,
 ) -> dict[str, Any]:
 
     params: dict[str, Any] = {}
 
-    params["pageSize"] = page_size
+    params["page_size"] = page_size
 
-    params["pageToken"] = page_token
+    params["page_token"] = page_token
 
     params["status"] = status
 
-    params["createdBy"] = created_by
+    params["created_by"] = created_by
 
-    params["createdAfter"] = created_after
+    params["created_after"] = created_after
 
-    params["createdBefore"] = created_before
+    params["created_before"] = created_before
 
-    params["rootRunId"] = root_run_id
+    params["root_run_id"] = root_run_id
 
-    params["projectId"] = project_id
+    params["project_id"] = project_id
+
+    params["executing_principal"] = executing_principal
 
     params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
 
@@ -50,19 +53,39 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ListRunsResponse | None:
+def _parse_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> ErrorBody | ListRunsResponse | None:
     if response.status_code == 200:
         response_200 = ListRunsResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
-def _build_response(*, client: AuthenticatedClient | Client, response: httpx.Response) -> Response[ListRunsResponse]:
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[ErrorBody | ListRunsResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -82,7 +105,8 @@ def sync_detailed(
     created_before: str | Unset = UNSET,
     root_run_id: str | Unset = UNSET,
     project_id: str | Unset = UNSET,
-) -> Response[ListRunsResponse]:
+    executing_principal: str | Unset = UNSET,
+) -> Response[ErrorBody | ListRunsResponse]:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
      status / creator / time / tree filters.
 
@@ -95,13 +119,14 @@ def sync_detailed(
         created_before (str | Unset):
         root_run_id (str | Unset):
         project_id (str | Unset):
+        executing_principal (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ListRunsResponse]
+        Response[ErrorBody | ListRunsResponse]
     """
 
     kwargs = _get_kwargs(
@@ -113,6 +138,7 @@ def sync_detailed(
         created_before=created_before,
         root_run_id=root_run_id,
         project_id=project_id,
+        executing_principal=executing_principal,
     )
 
     response = client.get_httpx_client().request(
@@ -133,7 +159,8 @@ def sync(
     created_before: str | Unset = UNSET,
     root_run_id: str | Unset = UNSET,
     project_id: str | Unset = UNSET,
-) -> ListRunsResponse | None:
+    executing_principal: str | Unset = UNSET,
+) -> ErrorBody | ListRunsResponse | None:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
      status / creator / time / tree filters.
 
@@ -146,13 +173,14 @@ def sync(
         created_before (str | Unset):
         root_run_id (str | Unset):
         project_id (str | Unset):
+        executing_principal (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ListRunsResponse
+        ErrorBody | ListRunsResponse
     """
 
     return sync_detailed(
@@ -165,6 +193,7 @@ def sync(
         created_before=created_before,
         root_run_id=root_run_id,
         project_id=project_id,
+        executing_principal=executing_principal,
     ).parsed
 
 
@@ -179,7 +208,8 @@ async def asyncio_detailed(
     created_before: str | Unset = UNSET,
     root_run_id: str | Unset = UNSET,
     project_id: str | Unset = UNSET,
-) -> Response[ListRunsResponse]:
+    executing_principal: str | Unset = UNSET,
+) -> Response[ErrorBody | ListRunsResponse]:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
      status / creator / time / tree filters.
 
@@ -192,13 +222,14 @@ async def asyncio_detailed(
         created_before (str | Unset):
         root_run_id (str | Unset):
         project_id (str | Unset):
+        executing_principal (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ListRunsResponse]
+        Response[ErrorBody | ListRunsResponse]
     """
 
     kwargs = _get_kwargs(
@@ -210,6 +241,7 @@ async def asyncio_detailed(
         created_before=created_before,
         root_run_id=root_run_id,
         project_id=project_id,
+        executing_principal=executing_principal,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -228,7 +260,8 @@ async def asyncio(
     created_before: str | Unset = UNSET,
     root_run_id: str | Unset = UNSET,
     project_id: str | Unset = UNSET,
-) -> ListRunsResponse | None:
+    executing_principal: str | Unset = UNSET,
+) -> ErrorBody | ListRunsResponse | None:
     """List the runs in the caller's tenant, newest first, with cursor pagination and optional
      status / creator / time / tree filters.
 
@@ -241,13 +274,14 @@ async def asyncio(
         created_before (str | Unset):
         root_run_id (str | Unset):
         project_id (str | Unset):
+        executing_principal (str | Unset):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ListRunsResponse
+        ErrorBody | ListRunsResponse
     """
 
     return (
@@ -261,5 +295,6 @@ async def asyncio(
             created_before=created_before,
             root_run_id=root_run_id,
             project_id=project_id,
+            executing_principal=executing_principal,
         )
     ).parsed

@@ -4,8 +4,8 @@ from urllib.parse import quote
 
 import httpx
 
-from ... import errors
 from ...client import AuthenticatedClient, Client
+from ...models.error_body import ErrorBody
 from ...models.rotate_sandbox_secret_request import RotateSandboxSecretRequest
 from ...models.rotate_sandbox_secret_response import RotateSandboxSecretResponse
 from ...types import Response
@@ -35,21 +35,39 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> RotateSandboxSecretResponse | None:
+) -> ErrorBody | RotateSandboxSecretResponse | None:
     if response.status_code == 200:
         response_200 = RotateSandboxSecretResponse.from_dict(response.json())
 
         return response_200
 
-    if client.raise_on_unexpected_status:
-        raise errors.UnexpectedStatus(response.status_code, response.content)
-    else:
-        return None
+    if response.status_code == 429:
+        # The edge can reject a request before a body exists (for example a denied
+        # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+        # undecodable error envelope instead of raising: parsed stays None and the raw
+        # bytes remain on Response.content.
+        try:
+            response_429 = ErrorBody.from_dict(response.json())
+        except ValueError:
+            response_429 = None
+
+        return response_429
+
+    # The edge can reject a request before a body exists (for example a denied
+    # credential, or its pre-credential rate-limit floor), so tolerate a missing or
+    # undecodable error envelope instead of raising: parsed stays None and the raw
+    # bytes remain on Response.content.
+    try:
+        response_default = ErrorBody.from_dict(response.json())
+    except ValueError:
+        response_default = None
+
+    return response_default
 
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[RotateSandboxSecretResponse]:
+) -> Response[ErrorBody | RotateSandboxSecretResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,9 +81,14 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: RotateSandboxSecretRequest,
-) -> Response[RotateSandboxSecretResponse]:
+) -> Response[ErrorBody | RotateSandboxSecretResponse]:
     """Rotate a secret to a new value within the caller's tenant, storing it as a new version. The new
      value is not returned.
+
+     Retries are safe with an `idempotency-key` header: repeating the request with the same key and
+     the same value returns the secret's current metadata instead of rotating a second time, and
+     reusing a key with a different value (or another secret) fails with `idempotency_conflict`.
+     Without a key, every call mints a new version.
 
     Args:
         id (str):
@@ -76,7 +99,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[RotateSandboxSecretResponse]
+        Response[ErrorBody | RotateSandboxSecretResponse]
     """
 
     kwargs = _get_kwargs(
@@ -96,9 +119,14 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: RotateSandboxSecretRequest,
-) -> RotateSandboxSecretResponse | None:
+) -> ErrorBody | RotateSandboxSecretResponse | None:
     """Rotate a secret to a new value within the caller's tenant, storing it as a new version. The new
      value is not returned.
+
+     Retries are safe with an `idempotency-key` header: repeating the request with the same key and
+     the same value returns the secret's current metadata instead of rotating a second time, and
+     reusing a key with a different value (or another secret) fails with `idempotency_conflict`.
+     Without a key, every call mints a new version.
 
     Args:
         id (str):
@@ -109,7 +137,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        RotateSandboxSecretResponse
+        ErrorBody | RotateSandboxSecretResponse
     """
 
     return sync_detailed(
@@ -124,9 +152,14 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: RotateSandboxSecretRequest,
-) -> Response[RotateSandboxSecretResponse]:
+) -> Response[ErrorBody | RotateSandboxSecretResponse]:
     """Rotate a secret to a new value within the caller's tenant, storing it as a new version. The new
      value is not returned.
+
+     Retries are safe with an `idempotency-key` header: repeating the request with the same key and
+     the same value returns the secret's current metadata instead of rotating a second time, and
+     reusing a key with a different value (or another secret) fails with `idempotency_conflict`.
+     Without a key, every call mints a new version.
 
     Args:
         id (str):
@@ -137,7 +170,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[RotateSandboxSecretResponse]
+        Response[ErrorBody | RotateSandboxSecretResponse]
     """
 
     kwargs = _get_kwargs(
@@ -155,9 +188,14 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: RotateSandboxSecretRequest,
-) -> RotateSandboxSecretResponse | None:
+) -> ErrorBody | RotateSandboxSecretResponse | None:
     """Rotate a secret to a new value within the caller's tenant, storing it as a new version. The new
      value is not returned.
+
+     Retries are safe with an `idempotency-key` header: repeating the request with the same key and
+     the same value returns the secret's current metadata instead of rotating a second time, and
+     reusing a key with a different value (or another secret) fails with `idempotency_conflict`.
+     Without a key, every call mints a new version.
 
     Args:
         id (str):
@@ -168,7 +206,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        RotateSandboxSecretResponse
+        ErrorBody | RotateSandboxSecretResponse
     """
 
     return (

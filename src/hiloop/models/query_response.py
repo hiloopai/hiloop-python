@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -23,9 +23,13 @@ class QueryResponse:
             value, nulls omitted, 64-bit
              integers as decimal strings. For aggregate surfaces the columns are the grouping columns plus
              one per aggregate metric (e.g. "sum_input_tokens"). Reused by the view service.
+        columns (list[str] | Unset): The result set's declared column names, in projection order. Present even when a
+            column is
+             NULL in every row (per-row nulls are omitted), so a selected-but-empty column stays visible.
     """
 
     rows: list[QueryResponseRowsItem] | Unset = UNSET
+    columns: list[str] | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -36,11 +40,17 @@ class QueryResponse:
                 rows_item = rows_item_data.to_dict()
                 rows.append(rows_item)
 
+        columns: list[str] | Unset = UNSET
+        if not isinstance(self.columns, Unset):
+            columns = self.columns
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if rows is not UNSET:
             field_dict["rows"] = rows
+        if columns is not UNSET:
+            field_dict["columns"] = columns
 
         return field_dict
 
@@ -58,8 +68,11 @@ class QueryResponse:
 
                 rows.append(rows_item)
 
+        columns = cast(list[str], d.pop("columns", UNSET))
+
         query_response = cls(
             rows=rows,
+            columns=columns,
         )
 
         query_response.additional_properties = d

@@ -13,21 +13,23 @@ T = TypeVar("T", bound="CreateSnapshotRequest")
 
 @_attrs_define
 class CreateSnapshotRequest:
-    """
-    Attributes:
-        sandbox_id (str | Unset):
-        contents (str | Unset):
-        allow_fallback (bool | Unset):
-        retention_class (str | Unset):
-        ttl_secs (str | Unset):
-        legal_hold (bool | Unset):
-        verification_probe_path (str | Unset): Optional path to a stable file whose bytes should be recorded at capture
-            time and verified after
-             every restore of this snapshot. Callers should quiesce writes to this path before requesting the
-             snapshot.
-        name (str | Unset): Optional user-assigned snapshot name. Names are not enforced unique; where a name is unique
-             within its project, the snapshot is addressable by it wherever a snapshot id is accepted.
-        description (str | Unset): Optional user-assigned free-text description.
+    """Retired snapshot compatibility request. Clean sandbox-cell deployments return unsupported; use
+    a BranchFS workspace plus stop/resume for filesystem continuity.
+
+       Attributes:
+           sandbox_id (str | Unset):
+           contents (str | Unset): Requested snapshot semantics. Omitted requests the `filesystem` baseline capture.
+           allow_fallback (bool | Unset):
+           retention_class (str | Unset):
+           ttl_secs (str | Unset):
+           legal_hold (bool | Unset):
+           verification_probe_path (str | Unset): Optional path to a stable file whose bytes should be recorded at capture
+               time and verified after
+                every restore of this snapshot. Callers should quiesce writes to this path before requesting the
+                snapshot.
+           name (str | Unset): Optional user-assigned snapshot name. Names are not enforced unique; where a name is unique
+                within its project, the snapshot is addressable by it wherever a snapshot id is accepted.
+           description (str | Unset): Optional user-assigned free-text description.
     """
 
     sandbox_id: str | Unset = UNSET
@@ -64,19 +66,19 @@ class CreateSnapshotRequest:
         field_dict.update(self.additional_properties)
         field_dict.update({})
         if sandbox_id is not UNSET:
-            field_dict["sandboxId"] = sandbox_id
+            field_dict["sandbox_id"] = sandbox_id
         if contents is not UNSET:
             field_dict["contents"] = contents
         if allow_fallback is not UNSET:
-            field_dict["allowFallback"] = allow_fallback
+            field_dict["allow_fallback"] = allow_fallback
         if retention_class is not UNSET:
-            field_dict["retentionClass"] = retention_class
+            field_dict["retention_class"] = retention_class
         if ttl_secs is not UNSET:
-            field_dict["ttlSecs"] = ttl_secs
+            field_dict["ttl_secs"] = ttl_secs
         if legal_hold is not UNSET:
-            field_dict["legalHold"] = legal_hold
+            field_dict["legal_hold"] = legal_hold
         if verification_probe_path is not UNSET:
-            field_dict["verificationProbePath"] = verification_probe_path
+            field_dict["verification_probe_path"] = verification_probe_path
         if name is not UNSET:
             field_dict["name"] = name
         if description is not UNSET:
@@ -87,19 +89,19 @@ class CreateSnapshotRequest:
     @classmethod
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         d = dict(src_dict)
-        sandbox_id = d.pop("sandboxId", UNSET)
+        sandbox_id = d.pop("sandbox_id", UNSET)
 
         contents = d.pop("contents", UNSET)
 
-        allow_fallback = d.pop("allowFallback", UNSET)
+        allow_fallback = d.pop("allow_fallback", UNSET)
 
-        retention_class = d.pop("retentionClass", UNSET)
+        retention_class = d.pop("retention_class", UNSET)
 
-        ttl_secs = d.pop("ttlSecs", UNSET)
+        ttl_secs = d.pop("ttl_secs", UNSET)
 
-        legal_hold = d.pop("legalHold", UNSET)
+        legal_hold = d.pop("legal_hold", UNSET)
 
-        verification_probe_path = d.pop("verificationProbePath", UNSET)
+        verification_probe_path = d.pop("verification_probe_path", UNSET)
 
         name = d.pop("name", UNSET)
 
